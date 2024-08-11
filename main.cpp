@@ -4,14 +4,12 @@
 #include <cstdio>
 #include "ast.h"
 #include "converter.h"
-
-// stuff from lex that yacc needs to know about:
 using namespace std;
 
 extern int yyparse();
 extern FILE *yyin;
 extern void yyerror(const char *s);
-extern ASTNode* root;  // Ensure this is defined in ast.h
+extern ASTNode* root; 
 
 ASTManager astManager;
 
@@ -31,9 +29,6 @@ int main(int argc, char *argv[]) {
 		cout << "Error opening file: " << argv[1] << endl;
 		return -1;
 	}
-
-	
-	// Parse through the input until there is no more
 	do {
 		yyparse();
 	} while (!feof(yyin));

@@ -19,9 +19,11 @@ public:
     std::string traverseFont(ASTNode* root, int type);
     std::string traverseDate(ASTNode* root, int type);
     std::string traverseTitle(ASTNode* root, int type);
-    std::string traverseMath(ASTNode* root, int type);
     std::string traverseChildren(ASTNode* root);
     std::string getMapping(int type);
+    std::string traverseReference(ASTNode* root, int type);
+    std::string traverseLabel(ASTNode* root, int type);
+    std::string traverseFigure(ASTNode* root, int type);
     void printMarkdown(const std::string& s, const std::string& filename);
 };
 

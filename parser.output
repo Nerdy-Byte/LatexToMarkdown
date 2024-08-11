@@ -1,15 +1,9 @@
-Nonterminals useless in grammar
-
-    math
-
-
 Terminals unused in grammar
 
     FIGURE_PATH
     FIGURE_SPECS
     HEADING
     MATH_STRING
-    FIG_ARGS
     PAR
     ENDL
     T_U
@@ -20,10 +14,7 @@ Terminals unused in grammar
     AMPERSAND
     DSLASH
     BEGIN_FIGURE
-    BEGIN_SQUARE
     END_FIGURE
-    END_SQUARE
-    INCLUDE_GRAPHICS
     CAPTION
     COMMA
     DOLLAR
@@ -37,16 +28,7 @@ Terminals unused in grammar
     REF_TAG
 
 
-Rules useless in grammar
-
-   31 math: DOLLAR MATH_STRING DOLLAR
-   32     | SUMMATION
-   33     | INTEGRAL
-   34     | FRACTION
-   35     | SQUARE_ROOT
-
-
-State 10 conflicts: 7 shift/reduce
+State 10 conflicts: 8 shift/reduce
 
 
 Grammar
@@ -68,67 +50,71 @@ Grammar
     9        | subsubsection
    10        | bold
    11        | italic
-   12        | content list
-   13        | content section
-   14        | content subsection
-   15        | content subsubsection
-   16        | content bold
-   17        | content italic
-   18        | ε
+   12        | figure
+   13        | content list
+   14        | content section
+   15        | content subsection
+   16        | content subsubsection
+   17        | content bold
+   18        | content italic
+   19        | content figure
+   20        | ε
 
-   19 list: ul
-   20     | ol
+   21 list: ul
+   22     | ol
 
-   21 ul: BEGIN_ITEMIZE items END_ITEMIZE
+   23 ul: BEGIN_ITEMIZE items END_ITEMIZE
 
-   22 ol: BEGIN_ENUMERATE items END_ENUMERATE
+   24 ol: BEGIN_ENUMERATE items END_ENUMERATE
 
-   23 items: items ITEM STRING
-   24      | ITEM STRING
+   25 items: items ITEM STRING
+   26      | ITEM STRING
 
-   25 section: SECTION BEGIN_CURLY STRING END_CURLY
+   27 section: SECTION BEGIN_CURLY STRING END_CURLY
 
-   26 subsection: SUBSECTION BEGIN_CURLY STRING END_CURLY
+   28 subsection: SUBSECTION BEGIN_CURLY STRING END_CURLY
 
-   27 subsubsection: SUBSUBSECTION BEGIN_CURLY STRING END_CURLY
+   29 subsubsection: SUBSUBSECTION BEGIN_CURLY STRING END_CURLY
 
-   28 verbatim: START_VERBATIM CODE END_VERBATIM
+   30 verbatim: START_VERBATIM CODE END_VERBATIM
 
-   29 bold: T_BF BEGIN_CURLY STRING END_CURLY
+   31 bold: T_BF BEGIN_CURLY STRING END_CURLY
 
-   30 italic: T_IT BEGIN_CURLY STRING END_CURLY
+   32 italic: T_IT BEGIN_CURLY STRING END_CURLY
+
+   33 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY STRING END_CURLY
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     error (256)
-    STRING <svalue> (258) 2 3 23 24 25 26 27 29 30
-    CODE <svalue> (259) 28
+    STRING <svalue> (258) 2 3 25 26 27 28 29 31 32 33
+    CODE <svalue> (259) 30
     FIGURE_PATH <svalue> (260)
     FIGURE_SPECS <svalue> (261)
     HEADING <svalue> (262)
     MATH_STRING <svalue> (263)
-    FIG_ARGS <svalue> (264)
+    FIG_ARGS <svalue> (264) 33
     TITLE (265) 2
     DATE (266) 3
-    START_VERBATIM (267) 28
-    END_VERBATIM (268) 28
-    END_CURLY (269) 2 3 25 26 27 29 30
+    START_VERBATIM (267) 30
+    END_VERBATIM (268) 30
+    END_CURLY (269) 2 3 27 28 29 31 32 33
     BEGIN_DOCUMENT (270) 4
     END_DOCUMENT (271) 4
-    ITEM (272) 23 24
-    BEGIN_ITEMIZE (273) 21
-    END_ITEMIZE (274) 21
-    BEGIN_ENUMERATE (275) 22
-    END_ENUMERATE (276) 22
-    SECTION (277) 25
-    SUBSECTION (278) 26
-    SUBSUBSECTION (279) 27
+    ITEM (272) 25 26
+    BEGIN_ITEMIZE (273) 23
+    END_ITEMIZE (274) 23
+    BEGIN_ENUMERATE (275) 24
+    END_ENUMERATE (276) 24
+    SECTION (277) 27
+    SUBSECTION (278) 28
+    SUBSUBSECTION (279) 29
     PAR (280)
     ENDL (281)
-    T_BF (282) 29
-    T_IT (283) 30
+    T_BF (282) 31
+    T_IT (283) 32
     T_U (284)
     BEGIN_TABULAR (285)
     END_TABULAR (286)
@@ -137,10 +123,10 @@ Terminals, with rules where they appear
     AMPERSAND (289)
     DSLASH (290)
     BEGIN_FIGURE (291)
-    BEGIN_SQUARE (292)
+    BEGIN_SQUARE (292) 33
     END_FIGURE (293)
-    END_SQUARE (294)
-    INCLUDE_GRAPHICS (295)
+    END_SQUARE (294) 33
+    INCLUDE_GRAPHICS (295) 33
     CAPTION (296)
     COMMA (297)
     DOLLAR (298)
@@ -152,7 +138,7 @@ Terminals, with rules where they appear
     SUBSCRIPT (304)
     LABEL_TAG (305)
     REF_TAG (306)
-    BEGIN_CURLY (307) 25 26 27 29 30
+    BEGIN_CURLY (307) 27 28 29 31 32 33
 
 
 Nonterminals, with rules where they appear
@@ -172,38 +158,41 @@ Nonterminals, with rules where they appear
         on left: 4
         on right: 1
     content <node> (58)
-        on left: 5 6 7 8 9 10 11 12 13 14 15 16 17 18
-        on right: 4 12 13 14 15 16 17
+        on left: 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+        on right: 4 13 14 15 16 17 18 19
     list <node> (59)
-        on left: 19 20
-        on right: 6 12
+        on left: 21 22
+        on right: 6 13
     ul <node> (60)
-        on left: 21
-        on right: 19
+        on left: 23
+        on right: 21
     ol <node> (61)
-        on left: 22
-        on right: 20
+        on left: 24
+        on right: 22
     items <node> (62)
-        on left: 23 24
-        on right: 21 22 23
+        on left: 25 26
+        on right: 23 24 25
     section <node> (63)
-        on left: 25
-        on right: 7 13
-    subsection <node> (64)
-        on left: 26
-        on right: 8 14
-    subsubsection <node> (65)
         on left: 27
-        on right: 9 15
-    verbatim <node> (66)
+        on right: 7 14
+    subsection <node> (64)
         on left: 28
+        on right: 8 15
+    subsubsection <node> (65)
+        on left: 29
+        on right: 9 16
+    verbatim <node> (66)
+        on left: 30
         on right: 5
     bold <node> (67)
-        on left: 29
-        on right: 10 16
+        on left: 31
+        on right: 10 17
     italic <node> (68)
-        on left: 30
-        on right: 11 17
+        on left: 32
+        on right: 11 18
+    figure <node> (69)
+        on left: 33
+        on right: 12 19
 
 
 State 0
@@ -287,34 +276,37 @@ State 10
 
     4 begin_document: BEGIN_DOCUMENT • content END_DOCUMENT
 
-    START_VERBATIM   shift, and go to state 13
-    BEGIN_ITEMIZE    shift, and go to state 14
-    BEGIN_ENUMERATE  shift, and go to state 15
-    SECTION          shift, and go to state 16
-    SUBSECTION       shift, and go to state 17
-    SUBSUBSECTION    shift, and go to state 18
-    T_BF             shift, and go to state 19
-    T_IT             shift, and go to state 20
+    START_VERBATIM    shift, and go to state 13
+    BEGIN_ITEMIZE     shift, and go to state 14
+    BEGIN_ENUMERATE   shift, and go to state 15
+    SECTION           shift, and go to state 16
+    SUBSECTION        shift, and go to state 17
+    SUBSUBSECTION     shift, and go to state 18
+    T_BF              shift, and go to state 19
+    T_IT              shift, and go to state 20
+    INCLUDE_GRAPHICS  shift, and go to state 21
 
-    BEGIN_ITEMIZE    [reduce using rule 18 (content)]
-    BEGIN_ENUMERATE  [reduce using rule 18 (content)]
-    SECTION          [reduce using rule 18 (content)]
-    SUBSECTION       [reduce using rule 18 (content)]
-    SUBSUBSECTION    [reduce using rule 18 (content)]
-    T_BF             [reduce using rule 18 (content)]
-    T_IT             [reduce using rule 18 (content)]
-    $default         reduce using rule 18 (content)
+    BEGIN_ITEMIZE     [reduce using rule 20 (content)]
+    BEGIN_ENUMERATE   [reduce using rule 20 (content)]
+    SECTION           [reduce using rule 20 (content)]
+    SUBSECTION        [reduce using rule 20 (content)]
+    SUBSUBSECTION     [reduce using rule 20 (content)]
+    T_BF              [reduce using rule 20 (content)]
+    T_IT              [reduce using rule 20 (content)]
+    INCLUDE_GRAPHICS  [reduce using rule 20 (content)]
+    $default          reduce using rule 20 (content)
 
-    content        go to state 21
-    list           go to state 22
-    ul             go to state 23
-    ol             go to state 24
-    section        go to state 25
-    subsection     go to state 26
-    subsubsection  go to state 27
-    verbatim       go to state 28
-    bold           go to state 29
-    italic         go to state 30
+    content        go to state 22
+    list           go to state 23
+    ul             go to state 24
+    ol             go to state 25
+    section        go to state 26
+    subsection     go to state 27
+    subsubsection  go to state 28
+    verbatim       go to state 29
+    bold           go to state 30
+    italic         go to state 31
+    figure         go to state 32
 
 
 State 11
@@ -333,379 +325,445 @@ State 12
 
 State 13
 
-   28 verbatim: START_VERBATIM • CODE END_VERBATIM
+   30 verbatim: START_VERBATIM • CODE END_VERBATIM
 
-    CODE  shift, and go to state 31
+    CODE  shift, and go to state 33
 
 
 State 14
 
-   21 ul: BEGIN_ITEMIZE • items END_ITEMIZE
+   23 ul: BEGIN_ITEMIZE • items END_ITEMIZE
 
-    ITEM  shift, and go to state 32
+    ITEM  shift, and go to state 34
 
-    items  go to state 33
+    items  go to state 35
 
 
 State 15
 
-   22 ol: BEGIN_ENUMERATE • items END_ENUMERATE
+   24 ol: BEGIN_ENUMERATE • items END_ENUMERATE
 
-    ITEM  shift, and go to state 32
+    ITEM  shift, and go to state 34
 
-    items  go to state 34
+    items  go to state 36
 
 
 State 16
 
-   25 section: SECTION • BEGIN_CURLY STRING END_CURLY
-
-    BEGIN_CURLY  shift, and go to state 35
-
-
-State 17
-
-   26 subsection: SUBSECTION • BEGIN_CURLY STRING END_CURLY
-
-    BEGIN_CURLY  shift, and go to state 36
-
-
-State 18
-
-   27 subsubsection: SUBSUBSECTION • BEGIN_CURLY STRING END_CURLY
+   27 section: SECTION • BEGIN_CURLY STRING END_CURLY
 
     BEGIN_CURLY  shift, and go to state 37
 
 
-State 19
+State 17
 
-   29 bold: T_BF • BEGIN_CURLY STRING END_CURLY
+   28 subsection: SUBSECTION • BEGIN_CURLY STRING END_CURLY
 
     BEGIN_CURLY  shift, and go to state 38
 
 
-State 20
+State 18
 
-   30 italic: T_IT • BEGIN_CURLY STRING END_CURLY
+   29 subsubsection: SUBSUBSECTION • BEGIN_CURLY STRING END_CURLY
 
     BEGIN_CURLY  shift, and go to state 39
 
 
+State 19
+
+   31 bold: T_BF • BEGIN_CURLY STRING END_CURLY
+
+    BEGIN_CURLY  shift, and go to state 40
+
+
+State 20
+
+   32 italic: T_IT • BEGIN_CURLY STRING END_CURLY
+
+    BEGIN_CURLY  shift, and go to state 41
+
+
 State 21
 
-    4 begin_document: BEGIN_DOCUMENT content • END_DOCUMENT
-   12 content: content • list
-   13        | content • section
-   14        | content • subsection
-   15        | content • subsubsection
-   16        | content • bold
-   17        | content • italic
+   33 figure: INCLUDE_GRAPHICS • BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY STRING END_CURLY
 
-    END_DOCUMENT     shift, and go to state 40
-    BEGIN_ITEMIZE    shift, and go to state 14
-    BEGIN_ENUMERATE  shift, and go to state 15
-    SECTION          shift, and go to state 16
-    SUBSECTION       shift, and go to state 17
-    SUBSUBSECTION    shift, and go to state 18
-    T_BF             shift, and go to state 19
-    T_IT             shift, and go to state 20
-
-    list           go to state 41
-    ul             go to state 23
-    ol             go to state 24
-    section        go to state 42
-    subsection     go to state 43
-    subsubsection  go to state 44
-    bold           go to state 45
-    italic         go to state 46
+    BEGIN_SQUARE  shift, and go to state 42
 
 
 State 22
+
+    4 begin_document: BEGIN_DOCUMENT content • END_DOCUMENT
+   13 content: content • list
+   14        | content • section
+   15        | content • subsection
+   16        | content • subsubsection
+   17        | content • bold
+   18        | content • italic
+   19        | content • figure
+
+    END_DOCUMENT      shift, and go to state 43
+    BEGIN_ITEMIZE     shift, and go to state 14
+    BEGIN_ENUMERATE   shift, and go to state 15
+    SECTION           shift, and go to state 16
+    SUBSECTION        shift, and go to state 17
+    SUBSUBSECTION     shift, and go to state 18
+    T_BF              shift, and go to state 19
+    T_IT              shift, and go to state 20
+    INCLUDE_GRAPHICS  shift, and go to state 21
+
+    list           go to state 44
+    ul             go to state 24
+    ol             go to state 25
+    section        go to state 45
+    subsection     go to state 46
+    subsubsection  go to state 47
+    bold           go to state 48
+    italic         go to state 49
+    figure         go to state 50
+
+
+State 23
 
     6 content: list •
 
     $default  reduce using rule 6 (content)
 
 
-State 23
-
-   19 list: ul •
-
-    $default  reduce using rule 19 (list)
-
-
 State 24
 
-   20 list: ol •
+   21 list: ul •
 
-    $default  reduce using rule 20 (list)
+    $default  reduce using rule 21 (list)
 
 
 State 25
+
+   22 list: ol •
+
+    $default  reduce using rule 22 (list)
+
+
+State 26
 
     7 content: section •
 
     $default  reduce using rule 7 (content)
 
 
-State 26
+State 27
 
     8 content: subsection •
 
     $default  reduce using rule 8 (content)
 
 
-State 27
+State 28
 
     9 content: subsubsection •
 
     $default  reduce using rule 9 (content)
 
 
-State 28
+State 29
 
     5 content: verbatim •
 
     $default  reduce using rule 5 (content)
 
 
-State 29
+State 30
 
    10 content: bold •
 
     $default  reduce using rule 10 (content)
 
 
-State 30
+State 31
 
    11 content: italic •
 
     $default  reduce using rule 11 (content)
 
 
-State 31
-
-   28 verbatim: START_VERBATIM CODE • END_VERBATIM
-
-    END_VERBATIM  shift, and go to state 47
-
-
 State 32
 
-   24 items: ITEM • STRING
+   12 content: figure •
 
-    STRING  shift, and go to state 48
+    $default  reduce using rule 12 (content)
 
 
 State 33
 
-   21 ul: BEGIN_ITEMIZE items • END_ITEMIZE
-   23 items: items • ITEM STRING
+   30 verbatim: START_VERBATIM CODE • END_VERBATIM
 
-    ITEM         shift, and go to state 49
-    END_ITEMIZE  shift, and go to state 50
+    END_VERBATIM  shift, and go to state 51
 
 
 State 34
 
-   22 ol: BEGIN_ENUMERATE items • END_ENUMERATE
-   23 items: items • ITEM STRING
-
-    ITEM           shift, and go to state 49
-    END_ENUMERATE  shift, and go to state 51
-
-
-State 35
-
-   25 section: SECTION BEGIN_CURLY • STRING END_CURLY
+   26 items: ITEM • STRING
 
     STRING  shift, and go to state 52
 
 
+State 35
+
+   23 ul: BEGIN_ITEMIZE items • END_ITEMIZE
+   25 items: items • ITEM STRING
+
+    ITEM         shift, and go to state 53
+    END_ITEMIZE  shift, and go to state 54
+
+
 State 36
 
-   26 subsection: SUBSECTION BEGIN_CURLY • STRING END_CURLY
+   24 ol: BEGIN_ENUMERATE items • END_ENUMERATE
+   25 items: items • ITEM STRING
 
-    STRING  shift, and go to state 53
+    ITEM           shift, and go to state 53
+    END_ENUMERATE  shift, and go to state 55
 
 
 State 37
 
-   27 subsubsection: SUBSUBSECTION BEGIN_CURLY • STRING END_CURLY
-
-    STRING  shift, and go to state 54
-
-
-State 38
-
-   29 bold: T_BF BEGIN_CURLY • STRING END_CURLY
-
-    STRING  shift, and go to state 55
-
-
-State 39
-
-   30 italic: T_IT BEGIN_CURLY • STRING END_CURLY
+   27 section: SECTION BEGIN_CURLY • STRING END_CURLY
 
     STRING  shift, and go to state 56
 
 
+State 38
+
+   28 subsection: SUBSECTION BEGIN_CURLY • STRING END_CURLY
+
+    STRING  shift, and go to state 57
+
+
+State 39
+
+   29 subsubsection: SUBSUBSECTION BEGIN_CURLY • STRING END_CURLY
+
+    STRING  shift, and go to state 58
+
+
 State 40
+
+   31 bold: T_BF BEGIN_CURLY • STRING END_CURLY
+
+    STRING  shift, and go to state 59
+
+
+State 41
+
+   32 italic: T_IT BEGIN_CURLY • STRING END_CURLY
+
+    STRING  shift, and go to state 60
+
+
+State 42
+
+   33 figure: INCLUDE_GRAPHICS BEGIN_SQUARE • FIG_ARGS END_SQUARE BEGIN_CURLY STRING END_CURLY
+
+    FIG_ARGS  shift, and go to state 61
+
+
+State 43
 
     4 begin_document: BEGIN_DOCUMENT content END_DOCUMENT •
 
     $default  reduce using rule 4 (begin_document)
 
 
-State 41
+State 44
 
-   12 content: content list •
-
-    $default  reduce using rule 12 (content)
-
-
-State 42
-
-   13 content: content section •
+   13 content: content list •
 
     $default  reduce using rule 13 (content)
 
 
-State 43
+State 45
 
-   14 content: content subsection •
+   14 content: content section •
 
     $default  reduce using rule 14 (content)
 
 
-State 44
+State 46
 
-   15 content: content subsubsection •
+   15 content: content subsection •
 
     $default  reduce using rule 15 (content)
 
 
-State 45
+State 47
 
-   16 content: content bold •
+   16 content: content subsubsection •
 
     $default  reduce using rule 16 (content)
 
 
-State 46
+State 48
 
-   17 content: content italic •
+   17 content: content bold •
 
     $default  reduce using rule 17 (content)
 
 
-State 47
-
-   28 verbatim: START_VERBATIM CODE END_VERBATIM •
-
-    $default  reduce using rule 28 (verbatim)
-
-
-State 48
-
-   24 items: ITEM STRING •
-
-    $default  reduce using rule 24 (items)
-
-
 State 49
 
-   23 items: items ITEM • STRING
+   18 content: content italic •
 
-    STRING  shift, and go to state 57
+    $default  reduce using rule 18 (content)
 
 
 State 50
 
-   21 ul: BEGIN_ITEMIZE items END_ITEMIZE •
+   19 content: content figure •
 
-    $default  reduce using rule 21 (ul)
+    $default  reduce using rule 19 (content)
 
 
 State 51
 
-   22 ol: BEGIN_ENUMERATE items END_ENUMERATE •
+   30 verbatim: START_VERBATIM CODE END_VERBATIM •
 
-    $default  reduce using rule 22 (ol)
+    $default  reduce using rule 30 (verbatim)
 
 
 State 52
 
-   25 section: SECTION BEGIN_CURLY STRING • END_CURLY
+   26 items: ITEM STRING •
 
-    END_CURLY  shift, and go to state 58
+    $default  reduce using rule 26 (items)
 
 
 State 53
 
-   26 subsection: SUBSECTION BEGIN_CURLY STRING • END_CURLY
+   25 items: items ITEM • STRING
 
-    END_CURLY  shift, and go to state 59
+    STRING  shift, and go to state 62
 
 
 State 54
 
-   27 subsubsection: SUBSUBSECTION BEGIN_CURLY STRING • END_CURLY
+   23 ul: BEGIN_ITEMIZE items END_ITEMIZE •
 
-    END_CURLY  shift, and go to state 60
+    $default  reduce using rule 23 (ul)
 
 
 State 55
 
-   29 bold: T_BF BEGIN_CURLY STRING • END_CURLY
+   24 ol: BEGIN_ENUMERATE items END_ENUMERATE •
 
-    END_CURLY  shift, and go to state 61
+    $default  reduce using rule 24 (ol)
 
 
 State 56
 
-   30 italic: T_IT BEGIN_CURLY STRING • END_CURLY
+   27 section: SECTION BEGIN_CURLY STRING • END_CURLY
 
-    END_CURLY  shift, and go to state 62
+    END_CURLY  shift, and go to state 63
 
 
 State 57
 
-   23 items: items ITEM STRING •
+   28 subsection: SUBSECTION BEGIN_CURLY STRING • END_CURLY
 
-    $default  reduce using rule 23 (items)
+    END_CURLY  shift, and go to state 64
 
 
 State 58
 
-   25 section: SECTION BEGIN_CURLY STRING END_CURLY •
+   29 subsubsection: SUBSUBSECTION BEGIN_CURLY STRING • END_CURLY
 
-    $default  reduce using rule 25 (section)
+    END_CURLY  shift, and go to state 65
 
 
 State 59
 
-   26 subsection: SUBSECTION BEGIN_CURLY STRING END_CURLY •
+   31 bold: T_BF BEGIN_CURLY STRING • END_CURLY
 
-    $default  reduce using rule 26 (subsection)
+    END_CURLY  shift, and go to state 66
 
 
 State 60
 
-   27 subsubsection: SUBSUBSECTION BEGIN_CURLY STRING END_CURLY •
+   32 italic: T_IT BEGIN_CURLY STRING • END_CURLY
 
-    $default  reduce using rule 27 (subsubsection)
+    END_CURLY  shift, and go to state 67
 
 
 State 61
 
-   29 bold: T_BF BEGIN_CURLY STRING END_CURLY •
+   33 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS • END_SQUARE BEGIN_CURLY STRING END_CURLY
 
-    $default  reduce using rule 29 (bold)
+    END_SQUARE  shift, and go to state 68
 
 
 State 62
 
-   30 italic: T_IT BEGIN_CURLY STRING END_CURLY •
+   25 items: items ITEM STRING •
 
-    $default  reduce using rule 30 (italic)
+    $default  reduce using rule 25 (items)
+
+
+State 63
+
+   27 section: SECTION BEGIN_CURLY STRING END_CURLY •
+
+    $default  reduce using rule 27 (section)
+
+
+State 64
+
+   28 subsection: SUBSECTION BEGIN_CURLY STRING END_CURLY •
+
+    $default  reduce using rule 28 (subsection)
+
+
+State 65
+
+   29 subsubsection: SUBSUBSECTION BEGIN_CURLY STRING END_CURLY •
+
+    $default  reduce using rule 29 (subsubsection)
+
+
+State 66
+
+   31 bold: T_BF BEGIN_CURLY STRING END_CURLY •
+
+    $default  reduce using rule 31 (bold)
+
+
+State 67
+
+   32 italic: T_IT BEGIN_CURLY STRING END_CURLY •
+
+    $default  reduce using rule 32 (italic)
+
+
+State 68
+
+   33 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE • BEGIN_CURLY STRING END_CURLY
+
+    BEGIN_CURLY  shift, and go to state 69
+
+
+State 69
+
+   33 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY • STRING END_CURLY
+
+    STRING  shift, and go to state 70
+
+
+State 70
+
+   33 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY STRING • END_CURLY
+
+    END_CURLY  shift, and go to state 71
+
+
+State 71
+
+   33 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY STRING END_CURLY •
+
+    $default  reduce using rule 33 (figure)

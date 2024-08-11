@@ -14,37 +14,34 @@ std::string myString(int n) {
 
 converter::converter() {
     myMapping[SECTION_H] = "##";              // Section
-    myMapping[SUBSECTION_H] = "###";         // Subsection
-    myMapping[SUBSUBSECTION_H] = "####";     // Subsubsection
-    myMapping[ITEMIZE_H] = "-";              // Unordered list (ul)
-    myMapping[ENUMERATE_H] = "1.";           // Ordered list (ol)
-    myMapping[ITEM_H] = "- ";                // List item (li) (note that `ITEMIZE_H` already uses "-")
-    myMapping[TEXTBF_H] = "**";              // Bold text (strong)
-    myMapping[TEXTIT_H] = "*";               // Italic text (em)
-    myMapping[UNDERLINE_H] = "<u>";          // Underline text (u)
-    myMapping[PAR_H] = "";                   // Paragraph (br)
-    myMapping[LABEL_H] = "";                 // Anchor label (not used in output, just for linking)
-    myMapping[REF_H] = "";                   // Anchor reference (not used in output, just for linking)
-    myMapping[TABULAR_H] = "";               // Table (not used in output, just for table structure)
-    myMapping[FIGURE_H] = "![]";             // Image (img) (for image link)
-    myMapping[INCLUDE_GRAPHICS_H] = "![]";   // Image (img) (for image link)
-    myMapping[CAPTION_H] = "";               // Figure caption (used with image)
-    myMapping[STRING_H] = "";                // Generic string content
-    myMapping[MATH_H] = "$";                 // Inline math
-    myMapping[SQRT_H] = "&radic;";           // Square root symbol
-    myMapping[FRAC_H] = "";                  // Fraction (could use custom handling)
-    myMapping[SUM_H] = "&sum;";              // Summation symbol
-    myMapping[INTG_H] = "&int;";             // Integral symbol
-    myMapping[DATE_H] = "Date: ";            // Date
-    myMapping[TITLE_H] = "#";                // Title (header level 1)
-    myMapping[VERBATIM_H] = "```";           // Verbatim text
+    myMapping[SUBSECTION_H] = "###";          // Subsection
+    myMapping[SUBSUBSECTION_H] = "####";      // Subsubsection
+    myMapping[ITEMIZE_H] = "-";               // Unordered list (ul)
+    myMapping[ENUMERATE_H] = "1.";            // Ordered list (ol)
+    myMapping[ITEM_H] = "- ";                 // List item (li) (note that `ITEMIZE_H` already uses "-")
+    myMapping[TEXTBF_H] = "**";               // Bold text (strong)
+    myMapping[TEXTIT_H] = "*";                // Italic text (em)
+    myMapping[UNDERLINE_H] = "<u>";           // Underline text (u)
+    myMapping[PAR_H] = "";                    // Paragraph (br)
+    myMapping[LABEL_H] = "";                  // Anchor label (not used in output, just for linking)
+    myMapping[REF_H] = "";                    // Anchor reference (not used in output, just for linking)
+    myMapping[TABULAR_H] = "";                // Table (not used in output, just for table structure)
+    myMapping[FIGURE_H] = "![]";              // Image (img) (for image link)
+    myMapping[INCLUDE_GRAPHICS_H] = "![]";    // Image (img) (for image link)
+    myMapping[CAPTION_H] = "";                // Figure caption (used with image)
+    myMapping[STRING_H] = "";                 // Generic string content
+    myMapping[DATE_H] = "Date: ";             // Date
+    myMapping[TITLE_H] = "#";                 // Title (header level 1)
+    myMapping[VERBATIM_H] = "```";            // Verbatim text
+    myMapping[CAPTION_H] = "![caption]";      // Caption for figures
 }
-
 
 std::string converter::traversal(ASTNode* root) {
     if (!root) return "";
     int type = root->node_type;
     switch (type) {
+        case ITEM_H: return root->data + "\n";
+
         case SECTION_H:
             return traverseSection(root, type);
         case SUBSECTION_H:
@@ -58,13 +55,18 @@ std::string converter::traversal(ASTNode* root) {
             return traverseVerbatim(root, type);
         case TEXTBF_H:
         case TEXTIT_H:
+        case UNDERLINE_H:
             return traverseFont(root, type);
         case TITLE_H:
             return traverseTitle(root, type);
         case DATE_H:
             return traverseDate(root, type);
-        case MATH_H:
-            return traverseMath(root, type);
+        case FIGURE_H:
+            return traverseFigure(root, type);
+        case LABEL_H:
+            return traverseLabel(root, type);
+        case REF_H:
+            return traverseReference(root, type);
         default:
             return traverseChildren(root);
     }
@@ -90,8 +92,26 @@ std::string converter::traverseSubsubSection(ASTNode* root, int type) {
 
 std::string converter::traverseList(ASTNode* root, int type) {
     std::string result;
-    for (auto& child : root->children) {
-        result += getMapping(type) + " " + traversal(child) + "\n";
+    ASTNode *temp = root->children[0];
+    if(type == ITEMIZE_H){
+        for (auto& child : root->children) {
+            result += getMapping(type) + " " + traversal(child) + "\n";
+        }
+        for (auto& child : temp->children) {
+            result += getMapping(type) + " " + traversal(child) + "\n";
+        }
+    }
+    else{
+        int count = 1;
+        for (auto& child : root->children) {
+            result += std::to_string(count) + " " + traversal(child) + "\n";
+            count++;
+        }
+        for (auto& child : temp->children) {
+            result += std::to_string(count) + " " + traversal(child) + "\n";
+            count++;
+        }
+
     }
     return result + "\n";
 }
@@ -105,15 +125,29 @@ std::string converter::traverseFont(ASTNode* root, int type) {
 }
 
 std::string converter::traverseDate(ASTNode* root, int type) {
-    return "Date: " + root->data + "\n\n";
+    return getMapping(type) + root->data + "\n\n";
 }
 
 std::string converter::traverseTitle(ASTNode* root, int type) {
-    return "# " + root->data + "\n\n";
+    return getMapping(type) + " " + root->data + "\n\n";
 }
 
-std::string converter::traverseMath(ASTNode* root, int type) {
-    return "$" + root->data + "$\n\n";
+std::string converter::traverseFigure(ASTNode* root, int type) {
+    std::string result = getMapping(FIGURE_H) + "(" + root->data + ")";
+    for (auto& child : root->children) {
+        if (child->node_type == CAPTION_H) {
+            result += " " + getMapping(CAPTION_H) + " \"" + child->data + "\"";
+        }
+    }
+    return result + "\n\n";
+}
+
+std::string converter::traverseLabel(ASTNode* root, int type) {
+    return getMapping(LABEL_H) + root->data + "\n\n";
+}
+
+std::string converter::traverseReference(ASTNode* root, int type) {
+    return getMapping(REF_H) + root->data + "\n\n";
 }
 
 std::string converter::traverseChildren(ASTNode* root) {

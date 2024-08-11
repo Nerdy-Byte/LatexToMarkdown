@@ -22,7 +22,7 @@ int prev_state[1] = {0};
 %x VERBATIUM_TEXT
 
 OPERATORS [+*\-\/\^=\(\)]
-SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\']
+SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 %%
 
@@ -68,9 +68,9 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\']
 
 <INITIAL,ENV_TABULAR>"\\underline"  { return T_U; }
 
-<INITIAL,ENV_TABULAR,MATHMODE,ENV_FIGURE>"{"   { return BEGIN_CURLY; }
+<INITIAL,ENV_TABULAR,MATHMODE,ENV_FIGURE>"{"   {  return BEGIN_CURLY; }
 
-<INITIAL,ENV_TABULAR,MATHMODE,ENV_FIGURE>"}"   { return END_CURLY; }
+<INITIAL,ENV_TABULAR,MATHMODE,ENV_FIGURE>"}"   {  BEGIN(INITIAL);return END_CURLY; }
 
 "\\begin{tabular}"                  { BEGIN(TABLE_ARGUMENTS); return BEGIN_TABULAR; }
 
@@ -106,7 +106,7 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\']
     return CODE;
 }
 
-<INITIAL>"\\end{document}"         { return END_DOCUMENT; }
+<INITIAL>"\\end{document}"         {  return END_DOCUMENT; }
 
 <INITIAL,DATE_CONTENT,TITLE_CONTENT,ENV_TABULAR,ENV_FIGURE>([a-zA-Z0-9 ]|{SPECIAL})* {
     yylval.svalue = new string(yytext);
@@ -135,78 +135,20 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\']
 
 <INITIAL,ENV_FIGURE>"\\includegraphics"     { return INCLUDE_GRAPHICS; }
 
-<INITIAL,ENV_FIGURE>"["                     { BEGIN(FIGURE_ARGUMENTS); return BEGIN_SQUARE; }
+<ENV_FIGURE,INITIAL>"["                     { BEGIN(FIGURE_ARGUMENTS); return BEGIN_SQUARE; }
 
 <ENV_FIGURE>"\\caption"                     { return CAPTION; }
 
 <ENV_FIGURE>"\\label"                       { return LABEL_TAG; }
 
-<FIGURE_ARGUMENTS>[a-z=. 0-9,]+ {
-    std::string fin = "";
-    int i = 0;
-    while (yytext[i] != '\0') {
-        switch (yytext[i]) {
-            case 'c':
-                if (yytext[i + 1] == 'm') {
-                    i += 2;
-                } else {
-                    fin += yytext[i++];
-                }
-                break;
-            case ',':
-                i++;
-                break;
-            default:
-                fin += yytext[i++];
-                break;
-        }
-    }
+<FIGURE_ARGUMENTS>[a-zA-Z0-9=.,\s\-\\]+ {
+    std::string fin(yytext);
+    
     yylval.svalue = new string(fin);
     return FIG_ARGS;
 }
 
-<FIGURE_ARGUMENTS>"]"               { BEGIN(ENV_FIGURE); return END_SQUARE; }
-
-<INITIAL,ENV_TABULAR,ENV_FIGURE>"$" { BEGIN(MATHMODE); return DOLLAR; }
-
-<MATHMODE>"\\sum"                   { return SUMMATION; }
-
-<MATHMODE>"\\int"                   { return INTEGRAL; }
-
-<MATHMODE>"\\frac"                  { return FRACTION; }
-
-<MATHMODE>"\\sqrt"                  { return SQUARE_ROOT; }
-
-<MATHMODE>\^                        { return SUPERSCRIPT; }
-
-<MATHMODE>\_                        { return SUBSCRIPT; }
-
-<MATHMODE>([A-Za-z0-9]|{OPERATORS})* {
-    std::string res = "";
-    for (int i = 0; i < strlen(yytext); ++i) {
-        res += yytext[i];
-    }
-    yylval.svalue = new string(res);
-    return MATH_STRING;
-}
-
-<MATHMODE>"$" {
-    if (prev_state[0] == 0) {
-        BEGIN(INITIAL);
-        prev_state[0] = 0;
-    } else if (prev_state[0] == 1) {
-        BEGIN(ENV_TABULAR);
-        prev_state[0] = 1;
-    } else if (prev_state[0] == 2) {
-        BEGIN(ENV_FIGURE);
-        prev_state[0] = 2;
-    } else {
-        cout << "Error" << endl;
-        BEGIN(INITIAL);
-    }
-
-    return DOLLAR;
-}
+<FIGURE_ARGUMENTS>"]"               {  BEGIN(ENV_FIGURE); return END_SQUARE; }
 
 . { ; }
 

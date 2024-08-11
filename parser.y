@@ -28,7 +28,7 @@ extern ASTNode* root;
 %token TABLE_ARGS HLINE AMPERSAND DSLASH BEGIN_FIGURE BEGIN_SQUARE END_FIGURE END_SQUARE INCLUDE_GRAPHICS CAPTION COMMA
 %token DOLLAR SUMMATION INTEGRAL FRACTION SQUARE_ROOT SUPERSCRIPT SUBSCRIPT LABEL_TAG REF_TAG BEGIN_CURLY
 
-%type <node> start title date begin_document content list ul ol items verbatim section subsection subsubsection math bold italic
+%type <node> start title date begin_document content list ul ol items verbatim section subsection subsubsection bold italic figure
 
 %%
 
@@ -64,6 +64,7 @@ content:
   | subsubsection
   | bold
   | italic
+  | figure
   | content list {
     $$ = $1;
     $$->addChild($2);
@@ -88,6 +89,10 @@ content:
     $$ = $1;
     $$->addChild($2);
   }
+  | content figure {
+    $$ = $1;
+    $$->addChild($2);
+  }
   | /* empty */ { $$ = astManager.newNode(DOCUMENT_H); };
 
 list: ul { $$ = $1; }
@@ -105,8 +110,9 @@ ol: BEGIN_ENUMERATE items END_ENUMERATE {
 
 items: items ITEM STRING {
             $$ = $1;
-            $$->addChild(astManager.newNode(ITEM_H));
-            $$->children.back()->data = *$3;
+            ASTNode* itemNode = astManager.newNode(ITEM_H);
+            itemNode->data = *$3;
+            $$->addChild(itemNode);
             delete $3;
         }
     | ITEM STRING {
@@ -151,22 +157,12 @@ italic: T_IT BEGIN_CURLY STRING END_CURLY {
     delete $3;
 };
 
-math: DOLLAR MATH_STRING DOLLAR {
-    $$ = astManager.newNode(MATH_H);
-    $$->data = *$2;
-    delete $2;
-}
-| SUMMATION {
-    $$ = astManager.newNode(SUM_H);
-}
-| INTEGRAL {
-    $$ = astManager.newNode(INTG_H);
-}
-| FRACTION {
-    $$ = astManager.newNode(FRAC_H);
-}
-| SQUARE_ROOT {
-    $$ = astManager.newNode(SQRT_H);
+figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY STRING END_CURLY {
+    $$ = astManager.newNode(FIGURE_H);
+    $$->data = *$6; 
+    delete $6;
+    // Additional logic can be added here to handle FIG_ARGS if necessary
 };
 
 %%
+

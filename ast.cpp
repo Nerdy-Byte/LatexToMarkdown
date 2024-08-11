@@ -41,12 +41,11 @@ ASTNode* ASTManager::newNode(NodeType type) {
 
 
 ASTManager::ASTManager() {
-    // Initialization code here
+    
 }
 
-// Define the destructor
 ASTManager::~ASTManager() {
-    // Cleanup code here
+    
 }
 
 void ASTManager::print(ASTNode* root, int tabs) const {
