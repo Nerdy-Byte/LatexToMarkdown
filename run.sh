@@ -1,3 +1,3 @@
 make clean
 make
-./parser input.tex
+./compiler input.tex out.md

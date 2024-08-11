@@ -1,21 +1,27 @@
 #include <iostream>
 #include <string>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
+#include "ast.h"
+#include "converter.h"
 
+// stuff from lex that yacc needs to know about:
 using namespace std;
 
 extern int yyparse();
 extern FILE *yyin;
 extern void yyerror(const char *s);
+extern ASTNode* root;  // Ensure this is defined in ast.h
+
+ASTManager astManager;
 
 void yyerror(const char *s) {
-    cout << s << endl;
-    exit(1);
+	cout << "Parse error!  Message: " << s << endl;
+	exit(-1);
 }
 
-int main(int argc, char** argv) {
-    if (argc < 2) {
+int main(int argc, char *argv[]) {
+	if (argc < 2) {
 		cout << "Error in entering arguments. Correct Format: /compiler <input.tex> <output.md>" << endl;
 		return -1;
 	}
@@ -26,11 +32,17 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 
-    do {
+	
+	// Parse through the input until there is no more
+	do {
 		yyparse();
 	} while (!feof(yyin));
 
-    fclose(yyin);
-    return 0;
+	converter C;
+	astManager.print(root, 1);
+	string s = C.traversal(root);
+	C.printMarkdown(s, argv[2]);
 
+	fclose(yyin);
+	return 0;
 }
