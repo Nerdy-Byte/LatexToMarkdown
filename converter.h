@@ -24,6 +24,8 @@ public:
     std::string traverseReference(ASTNode* root, int type);
     std::string traverseLabel(ASTNode* root, int type);
     std::string traverseFigure(ASTNode* root, int type);
+    std::string traverseParagraph(ASTNode* root, int type);
+    std::string traverseString(ASTNode* root, int type);
     void printMarkdown(const std::string& s, const std::string& filename);
 };
 

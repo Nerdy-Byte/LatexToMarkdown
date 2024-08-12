@@ -33,7 +33,7 @@ converter::converter() {
     myMapping[DATE_H] = "Date: ";             // Date
     myMapping[TITLE_H] = "#";                 // Title (header level 1)
     myMapping[VERBATIM_H] = "```";            // Verbatim text
-    myMapping[CAPTION_H] = "![caption]";      // Caption for figures
+    myMapping[CAPTION_H] = "![IIT Delhi]";      // Caption for figures
 }
 
 std::string converter::traversal(ASTNode* root) {
@@ -67,6 +67,9 @@ std::string converter::traversal(ASTNode* root) {
             return traverseLabel(root, type);
         case REF_H:
             return traverseReference(root, type);
+        case HRULE_H:  return "---\n\n";
+        case PAR_H: return traverseParagraph(root, type);
+
         default:
             return traverseChildren(root);
     }
@@ -161,6 +164,13 @@ std::string converter::traverseChildren(ASTNode* root) {
 std::string converter::getMapping(int type) {
     return myMapping[type];
 }
+
+std::string converter::traverseParagraph(ASTNode* root, int type) {
+    std::string result = root->data + "\n\n";
+    result += traverseChildren(root);  // If there are any children nodes within the paragraph
+    return result;
+}
+
 
 void converter::printMarkdown(const std::string& s, const std::string& filename) {
     std::ofstream file(filename);

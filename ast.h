@@ -32,14 +32,12 @@ enum NodeType {
     INCLUDE_GRAPHICS_H,
     LABEL_H,
     REF_H,
-    MATH_H,
-    SUM_H,
-    INTG_H,
-    FRAC_H,
+    HLINE_H,
     SQRT_H,
     TITLE_H,
     DATE_H,
-    VERBATIM_H
+    VERBATIM_H,
+    HRULE_H
 };
 
 inline string nodeTypeToString(NodeType type) {
@@ -64,15 +62,13 @@ inline string nodeTypeToString(NodeType type) {
         case DOCUMENT_H: return "DOCUMENT_H";
         case ROW_H: return "ROW_H";
         case CELL_H: return "CELL_H";
-        case MATH_H: return "MATH_H";
         case SQRT_H: return "SQRT_H";
-        case FRAC_H: return "FRAC_H";
-        case SUM_H: return "SUM_H";
-        case INTG_H: return "INTG_H";
+        case HLINE_H: return "HLINE_H";
         case SUBSUBSECTION_H: return "SUBSUBSECTION_H";
         case TITLE_H: return "TITLE_H";
         case DATE_H: return "DATE_H";
         case VERBATIM_H: return "VERBATIM_H";
+        case HRULE_H: return "HRULE_H";
         default: return "UNKNOWN_NODE_TYPE";
     }
 }

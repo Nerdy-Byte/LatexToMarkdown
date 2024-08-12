@@ -24,11 +24,12 @@ extern ASTNode* root;
 
 %token <svalue> STRING CODE FIGURE_PATH FIGURE_SPECS HEADING MATH_STRING FIG_ARGS
 %token TITLE DATE START_VERBATIM END_VERBATIM END_CURLY BEGIN_DOCUMENT END_DOCUMENT ITEM BEGIN_ITEMIZE END_ITEMIZE
-%token BEGIN_ENUMERATE END_ENUMERATE SECTION SUBSECTION SUBSUBSECTION PAR ENDL T_BF T_IT T_U BEGIN_TABULAR END_TABULAR
+%token BEGIN_ENUMERATE END_ENUMERATE SECTION SUBSECTION SUBSUBSECTION ENDL T_BF T_IT T_U BEGIN_TABULAR END_TABULAR
 %token TABLE_ARGS HLINE AMPERSAND DSLASH BEGIN_FIGURE BEGIN_SQUARE END_FIGURE END_SQUARE INCLUDE_GRAPHICS CAPTION COMMA
-%token DOLLAR SUMMATION INTEGRAL FRACTION SQUARE_ROOT SUPERSCRIPT SUBSCRIPT LABEL_TAG REF_TAG BEGIN_CURLY
+%token BEGIN_CURLY PAR LABEL_TAG REF_TAG HRULE
 
-%type <node> start title date begin_document content list ul ol items verbatim section subsection subsubsection bold italic figure
+%type <node> start title date begin_document content list ul ol items verbatim section subsection subsubsection bold 
+%type <node> italic figure par text hrule
 
 %%
 
@@ -64,7 +65,9 @@ content:
   | subsubsection
   | bold
   | italic
+  | par
   | figure
+  | hrule
   | content list {
     $$ = $1;
     $$->addChild($2);
@@ -93,7 +96,17 @@ content:
     $$ = $1;
     $$->addChild($2);
   }
-  | /* empty */ { $$ = astManager.newNode(DOCUMENT_H); };
+  | content par {
+    $$ = $1;
+    $$->addChild($2);
+  }
+  | content hrule {
+    $$ = $1;
+    $$->addChild($2);
+  }
+  | /* empty */ {
+    $$ = astManager.newNode(DOCUMENT_H);
+  };
 
 list: ul { $$ = $1; }
     | ol { $$ = $1; };
@@ -125,6 +138,10 @@ section: SECTION BEGIN_CURLY STRING END_CURLY {
     $$ = astManager.newNode(SECTION_H);
     $$->data = *$3;
     delete $3;
+};
+
+hrule: HRULE {
+    $$ = astManager.newNode(HRULE_H);
 };
 
 subsection: SUBSECTION BEGIN_CURLY STRING END_CURLY {
@@ -159,10 +176,29 @@ italic: T_IT BEGIN_CURLY STRING END_CURLY {
 
 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY STRING END_CURLY {
     $$ = astManager.newNode(FIGURE_H);
-    $$->data = *$6; 
+    $$->data = *$6;
     delete $6;
-    // Additional logic can be added here to handle FIG_ARGS if necessary
 };
+
+par: text PAR text {
+    $$ = astManager.newNode(PAR_H);
+    $$->data = $1->data + "\n\n" + $3->data;
+    delete $1;
+    delete $3;
+};
+
+
+text: text STRING {
+    $$ = $1;
+    $$->data += " " + *$2;
+    delete $2;
+}
+| STRING {
+    $$ = astManager.newNode(STRING_H);
+    $$->data = *$1;
+    delete $1;
+};
+
 
 %%
 

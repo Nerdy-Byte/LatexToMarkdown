@@ -62,6 +62,8 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 "\\subsubsection"                   { return SUBSUBSECTION; }
 
+"\\par"                             { return PAR; }
+
 <INITIAL,ENV_TABULAR>"\\textbf"     { return T_BF; }
 
 <INITIAL,ENV_TABULAR>"\\textit"     { return T_IT; }
@@ -70,7 +72,7 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 <INITIAL,ENV_TABULAR,MATHMODE,ENV_FIGURE>"{"   {  return BEGIN_CURLY; }
 
-<INITIAL,ENV_TABULAR,MATHMODE,ENV_FIGURE>"}"   {  BEGIN(INITIAL);return END_CURLY; }
+<INITIAL,ENV_TABULAR,MATHMODE>"}"   {  BEGIN(INITIAL);return END_CURLY; }
 
 "\\begin{tabular}"                  { BEGIN(TABLE_ARGUMENTS); return BEGIN_TABULAR; }
 
@@ -88,12 +90,12 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
     yylval.svalue = new string(res);
     return TABLE_ARGS;
 }
-
+<INITIAL>"\\hrule"                 { return HRULE; }
 <TABLE_ARGUMENTS>"}"               { BEGIN(ENV_TABULAR); prev_state[0] = 1; return END_CURLY; }
 
 <ENV_TABULAR>"&"                   { return AMPERSAND; }
 
-<INITIAL,ENV_TABULAR>\\\\         { return DSLASH; }
+<INITIAL,ENV_TABULAR>\\\\          { return DSLASH; }
 
 <ENV_TABULAR>"\\hline"             { return HLINE; }
 
@@ -117,7 +119,7 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 <ENV_TABULAR>"\\begin{figure}"     { BEGIN(ENV_FIGURE); prev_state[0] = 1; return BEGIN_FIGURE; }
 
-<ENV_FIGURE>"\\end{figure}"        {
+<ENV_FIGURE>"}"        {
     if (prev_state[0] == 0) {
         BEGIN(INITIAL);
         prev_state[0] = 2;
@@ -130,7 +132,7 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
     } else {
         BEGIN(INITIAL);
     }
-    return END_FIGURE;
+    return END_CURLY;
 }
 
 <INITIAL,ENV_FIGURE>"\\includegraphics"     { return INCLUDE_GRAPHICS; }
