@@ -55,7 +55,7 @@ void ASTManager::print(ASTNode* root, int tabs) const {
     for (int i = 0; i < tabs; ++i) {
         cout << "-*-";
     }
-    cout << nodeTypeToString(root->node_type) /*<< ": " << root->data << " (" << root->attributes << ")" */<< endl;
+    cout << nodeTypeToString(root->node_type)<< endl;
     
     for (const auto& child : root->children) {
         print(child, tabs + 1);

@@ -38,7 +38,8 @@ enum NodeType {
     DATE_H,
     VERBATIM_H,
     HRULE_H,
-    HREF_H
+    HREF_H,
+    TEXT_H
 };
 
 inline string nodeTypeToString(NodeType type) {
@@ -71,6 +72,7 @@ inline string nodeTypeToString(NodeType type) {
         case VERBATIM_H: return "VERBATIM_H";
         case HRULE_H: return "HRULE_H";
         case HREF_H: return "HREF_H";
+        case TEXT_H: return "TEXT_H";
         default: return "UNKNOWN_NODE_TYPE";
     }
 }

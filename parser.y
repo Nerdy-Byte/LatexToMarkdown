@@ -4,7 +4,7 @@
 #include <string>
 #include <fstream>
 #include <cstdlib>
-#include "ast.h" 
+#include "ast.h"
 #include "parser.tab.h"
 
 using namespace std;
@@ -63,10 +63,9 @@ content:
   | section
   | subsection
   | subsubsection
-  | bold
-  | italic
-  | par
+  | text
   | figure
+  | par
   | hrule
   | tabular
   | href
@@ -83,14 +82,6 @@ content:
     $$->addChild($2);
   }
   | content subsubsection {
-    $$ = $1;
-    $$->addChild($2);
-  }
-  | content bold {
-    $$ = $1;
-    $$->addChild($2);
-  }
-  | content italic {
     $$ = $1;
     $$->addChild($2);
   }
@@ -114,6 +105,10 @@ content:
     $$ = $1;
     $$->addChild($2);
   }
+  | content text {
+    $$ = $1;
+    $$->addChild($2);
+  }
   | /* empty */ {
     $$ = astManager.newNode(DOCUMENT_H);
   };
@@ -132,26 +127,22 @@ ol: BEGIN_ENUMERATE items END_ENUMERATE {
 };
 
 items: items ITEM STRING {
-            $$ = $1;
-            ASTNode* itemNode = astManager.newNode(ITEM_H);
-            itemNode->data = *$3;
-            $$->addChild(itemNode);
-            delete $3;
-        }
+    $$ = $1;
+    ASTNode* itemNode = astManager.newNode(ITEM_H);
+    itemNode->data = *$3;
+    $$->addChild(itemNode);
+    delete $3;
+}
     | ITEM STRING {
-            $$ = astManager.newNode(ITEM_H);
-            $$->data = *$2;
-            delete $2;
-        };
+    $$ = astManager.newNode(ITEM_H);
+    $$->data = *$2;
+    delete $2;
+};
 
 section: SECTION BEGIN_CURLY STRING END_CURLY {
     $$ = astManager.newNode(SECTION_H);
     $$->data = *$3;
     delete $3;
-};
-
-hrule: HRULE {
-    $$ = astManager.newNode(HRULE_H);
 };
 
 subsection: SUBSECTION BEGIN_CURLY STRING END_CURLY {
@@ -190,44 +181,86 @@ figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY STRING END
     delete $6;
 };
 
-par: text PAR text {
-    $$ = astManager.newNode(PAR_H);
-    $$->data = $1->data + "\n\n" + $3->data;
-    delete $1;
-    delete $3;
-};
+text:
+    text STRING {
+        // Continue with the current TEXT_H node, adding STRING as a child
+        $$ = $1;
+        ASTNode* stringNode = astManager.newNode(STRING_H);  // Create STRING_H node
+        stringNode->data = *$2;  // Set the string data
+        delete $2;  // Clean up the old string
+        $$->addChild(stringNode);  // Add the STRING_H node as a child of TEXT_H
+    }
+    | text bold {
+        // Continue using the existing TEXT_H node
+        $$ = $1;
+        $$->addChild($2);  // Add the bold text node as a child
+    }
+    | text italic {
+        // Continue using the existing TEXT_H node
+        $$ = $1;
+        $$->addChild($2);  // Add the italic text node as a child
+    }
+    | bold {
+        // Create a new TEXT_H node for bold text
+        $$ = astManager.newNode(TEXT_H);
+        $$->addChild($1);  // Add the bold text node as a child
+    }
+    | italic {
+        // Create a new TEXT_H node for italic text
+        $$ = astManager.newNode(TEXT_H);
+        $$->addChild($1);  // Add the italic text node as a child
+    }
+    | STRING {
+        // Create a STRING_H node for plain text
+        $$ = astManager.newNode(STRING_H);
+        $$->data = *$1;  // Set the data to the string value
+        delete $1;  // Clean up the old string
+    };
 
-text: text STRING {
-    $$ = $1;
-    $$->data += " " + *$2;
-    delete $2;
-}
-| STRING {
-    $$ = astManager.newNode(STRING_H);
-    $$->data = *$1;
-    delete $1;
-};
+par:
+    text PAR text {
+        // Create a PAR_H node and add the two TEXT_H nodes as children
+        $$ = astManager.newNode(PAR_H);
+        $$->addChild($1);  // Add the first TEXT_H node
+        $$->addChild($3);  // Add the second TEXT_H node
+    }
+    | text PAR {
+        // Create a PAR_H node with only the first part of the text
+        $$ = astManager.newNode(PAR_H);
+        $$->addChild($1);  // Add the TEXT_H node
+    }
+    | PAR text {
+        // Create a PAR_H node with only the second part of the text
+        $$ = astManager.newNode(PAR_H);
+        $$->addChild($2);  // Add the TEXT_H node
+    }
+    | PAR {
+        // Create an empty PAR_H node
+        $$ = astManager.newNode(PAR_H);
+    };
+
+
 
 tabular: BEGIN_TABULAR BEGIN_CURLY TABLE_ARGS END_CURLY HLINE rows END_TABULAR {
     $$ = astManager.newNode(TABULAR_H);
-    $$->data = *$3; 
-    $$->addChild($6); 
+    $$->data = *$3;
+    delete $3;
+    $$->addChild($6);
 };
 
 rows: rows row {
     $$ = $1;
     $$->addChild($2);
 }
-| row {
+    | row {
     $$ = $1;
-}
-;
+};
 
 row: cells DSLASH HLINE {
     $$ = astManager.newNode(ROW_H);
     $$->addChild($1);
 }
-| cells DSLASH {
+    | cells DSLASH {
     $$ = astManager.newNode(ROW_H);
     $$->addChild($1);
 };
@@ -236,8 +269,8 @@ cells: cells AMPERSAND cell {
     $$ = $1;
     $$->addChild($3);
 }
-| cell {
-    $$ = astManager.newNode(CELL_H); 
+    | cell {
+    $$ = astManager.newNode(CELL_H);
     $$->addChild($1);
 };
 
@@ -247,10 +280,15 @@ cell: STRING {
     delete $1;
 };
 
-href: HREF BEGIN_CURLY STRING END_CURLY BEGIN_CURLY STRING END_CURLY{
+href: HREF BEGIN_CURLY STRING END_CURLY BEGIN_CURLY STRING END_CURLY {
     $$ = astManager.newNode(HREF_H);
-    $$->data = *$3 + "#" +*$6;
-}
+    $$->data = *$3 + "#" + *$6;
+    delete $3;
+    delete $6;
+};
+
+hrule: HRULE {
+    $$ = astManager.newNode(HRULE_H);
+};
 
 %%
-

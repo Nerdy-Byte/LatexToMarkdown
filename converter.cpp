@@ -43,7 +43,7 @@ std::string converter::traversal(ASTNode* root) {
     int type = root->node_type;
     switch (type) {
         case ITEM_H: return root->data + "\n";
-
+        case STRING_H: return root->data + "\n";
         case SECTION_H:
             return traverseSection(root, type);
         case SUBSECTION_H:
@@ -69,7 +69,7 @@ std::string converter::traversal(ASTNode* root) {
             return traverseLabel(root, type);
         case REF_H:
             return traverseReference(root, type);
-        case HRULE_H:  return "---\n\n";
+        case HRULE_H:  return "\n\n---\n\n";
         case PAR_H: return traverseParagraph(root, type);
         case HREF_H: return traverseHref(root, type);
 
@@ -127,7 +127,7 @@ std::string converter::traverseVerbatim(ASTNode* root, int type) {
 }
 
 std::string converter::traverseFont(ASTNode* root, int type) {
-    return getMapping(type) + root->data + getMapping(type) + "\n\n";
+    return getMapping(type) + root->data + getMapping(type)+"\n";
 }
 
 std::string converter::traverseDate(ASTNode* root, int type) {
@@ -180,11 +180,17 @@ std::string converter::getMapping(int type) {
 }
 
 std::string converter::traverseParagraph(ASTNode* root, int type) {
-    std::string result = root->data + "\n\n";
-    result += traverseChildren(root);  // If there are any children nodes within the paragraph
-    return result;
+    std::string result;
+    ASTNode* temp = root->children[0];
+    for (auto& child : temp->children) {
+        result += traverseFont(child, child->node_type); 
+    }
+    for (auto& child : root->children) {
+        result += traverseFont(child, child->node_type); 
+    }
+    
+    return result + "\n\n";
 }
-
 
 void converter::printMarkdown(const std::string& s, const std::string& filename) {
     std::ofstream file(filename);

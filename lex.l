@@ -18,7 +18,7 @@ int prev_state[1] = {0};
 %x TABLE_ARGUMENTS
 %x ENV_FIGURE
 %x FIGURE_ARGUMENTS
-%x VERBATIUM_TEXT
+%x VERBATIUM_MODE
 %x HREF_PATH
 %x HREF_TAG
 
@@ -83,17 +83,17 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 <INITIAL,ENV_TABULAR,ENV_FIGURE>"{"   { return BEGIN_CURLY; }
 
-<INITIAL,ENV_TABULAR>"}"              { BEGIN(INITIAL);return END_CURLY; }
+<INITIAL,ENV_TABULAR>"}"              { BEGIN(INITIAL); return END_CURLY; }
 
 "\\begin{tabular}"                    { BEGIN(TABLE_ARGUMENTS); return BEGIN_TABULAR; }
 
 <ENV_TABULAR>"\\end{tabular}"         { BEGIN(INITIAL); prev_state[0] = 0; return END_TABULAR; }
 
-<TABLE_ARGUMENTS>"{"                  { return BEGIN_CURLY;}
+<TABLE_ARGUMENTS>"{"                  { return BEGIN_CURLY; }
 
 <TABLE_ARGUMENTS>[lcr|]*              {
     std::string res = "";
-    cout<<yytext<<endl;
+    cout << yytext << endl;
     for (int i = 0; i < strlen(yytext); i++) {
         if (yytext[i] == 'l' || yytext[i] == 'c' || yytext[i] == 'r') {
             res += yytext[i];
@@ -104,33 +104,30 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
     return TABLE_ARGS;
 }
 
+<INITIAL>"\\hrule"                    { return HRULE; }
 
-<INITIAL>"\\hrule"                 { return HRULE; }
+<TABLE_ARGUMENTS>"}"                  { BEGIN(ENV_TABULAR); prev_state[0] = 1; return END_CURLY; }
 
-<TABLE_ARGUMENTS>"}"               { BEGIN(ENV_TABULAR); prev_state[0] = 1; return END_CURLY; }
+<ENV_TABULAR>"&"                      { return AMPERSAND; }
 
-<ENV_TABULAR>"&"                   { return AMPERSAND; }
+<INITIAL,ENV_TABULAR>\\\\             { return DSLASH; }
 
-<INITIAL,ENV_TABULAR>\\\\          { return DSLASH; }
+<ENV_TABULAR>"\\hline"                { return HLINE; }
 
-<ENV_TABULAR>"\\hline"             { return HLINE; }
+\\begin\{verbatim\}                   { BEGIN(VERBATIUM_MODE); return START_VERBATIM; }
 
-<INITIAL>"\\begin{verbatim}"       { BEGIN(VERBATIUM_TEXT); return START_VERBATIM; }
-
-<VERBATIUM_TEXT>"\\end{verbatim}"  { BEGIN(INITIAL); return END_VERBATIM; }
-
-<VERBATIUM_TEXT>"def"[^{\n]*"{"([^{}]|\n)*"}" {
-    yylval.svalue = new string(yytext);
-    return CODE;
+<VERBATIUM_MODE>{
+    "\\end{verbatim}"                 { BEGIN(INITIAL); return END_VERBATIM; }
+    
+    [^\n]+                            { yylval.svalue = new string(yytext); return CODE; }
+    \n                                { /* Match and ignore newline */ }
 }
 
-<INITIAL>"\\end{document}"         {  return END_DOCUMENT; }
+<INITIAL>"\\end{document}"            { return END_DOCUMENT; }
 
+"\\begin{figure}"                     { BEGIN(ENV_FIGURE); prev_state[0] = 0; return BEGIN_FIGURE; }
 
-
-"\\begin{figure}"                  { BEGIN(ENV_FIGURE); prev_state[0] = 0; return BEGIN_FIGURE; }
-
-<ENV_TABULAR>"\\begin{figure}"     { BEGIN(ENV_FIGURE); prev_state[0] = 1; return BEGIN_FIGURE; }
+<ENV_TABULAR>"\\begin{figure}"        { BEGIN(ENV_FIGURE); prev_state[0] = 1; return BEGIN_FIGURE; }
 
 <ENV_FIGURE>"}"        {
     if (prev_state[0] == 0) {
@@ -148,13 +145,13 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
     return END_CURLY;
 }
 
-<INITIAL,ENV_FIGURE>"\\includegraphics"     { return INCLUDE_GRAPHICS; }
+<INITIAL,ENV_FIGURE>"\\includegraphics" { return INCLUDE_GRAPHICS; }
 
-<ENV_FIGURE,INITIAL>"["                     { BEGIN(FIGURE_ARGUMENTS); return BEGIN_SQUARE; }
+<ENV_FIGURE,INITIAL>"["                { BEGIN(FIGURE_ARGUMENTS); return BEGIN_SQUARE; }
 
-<ENV_FIGURE>"\\caption"                     { return CAPTION; }
+<ENV_FIGURE>"\\caption"                { return CAPTION; }
 
-<ENV_FIGURE>"\\label"                       { return LABEL_TAG; }
+<ENV_FIGURE>"\\label"                  { return LABEL_TAG; }
 
 <FIGURE_ARGUMENTS>[a-zA-Z0-9=.,\s\-\\]+ {
     std::string fin(yytext);
@@ -163,13 +160,12 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
     return FIG_ARGS;
 }
 
-<FIGURE_ARGUMENTS>"]"               {  BEGIN(ENV_FIGURE); return END_SQUARE; }
+<FIGURE_ARGUMENTS>"]"                 { BEGIN(ENV_FIGURE); return END_SQUARE; }
 
 <INITIAL,DATE_CONTENT,TITLE_CONTENT,ENV_TABULAR,ENV_FIGURE,HREF_PATH,HREF_TAG>([a-zA-Z0-9 ]|{SPECIAL})* {
     yylval.svalue = new string(yytext);
     return STRING;
 }
 
-.                                   { ; }
+.                                      { ; }
 
-%%
