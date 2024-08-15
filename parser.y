@@ -22,14 +22,14 @@ extern ASTNode* root;
 
 %start start 
 
-%token <svalue> STRING CODE FIGURE_PATH FIGURE_SPECS HEADING MATH_STRING FIG_ARGS
+%token <svalue> STRING CODE FIGURE_PATH FIGURE_SPECS HEADING MATH_STRING FIG_ARGS TABLE_ARGS
 %token TITLE DATE START_VERBATIM END_VERBATIM END_CURLY BEGIN_DOCUMENT END_DOCUMENT ITEM BEGIN_ITEMIZE END_ITEMIZE
 %token BEGIN_ENUMERATE END_ENUMERATE SECTION SUBSECTION SUBSUBSECTION ENDL T_BF T_IT T_U BEGIN_TABULAR END_TABULAR
-%token TABLE_ARGS HLINE AMPERSAND DSLASH BEGIN_FIGURE BEGIN_SQUARE END_FIGURE END_SQUARE INCLUDE_GRAPHICS CAPTION COMMA
-%token BEGIN_CURLY PAR LABEL_TAG REF_TAG HRULE
+%token HLINE AMPERSAND DSLASH BEGIN_FIGURE BEGIN_SQUARE END_FIGURE END_SQUARE INCLUDE_GRAPHICS CAPTION COMMA
+%token BEGIN_CURLY PAR LABEL_TAG REF_TAG HRULE HREF
 
 %type <node> start title date begin_document content list ul ol items verbatim section subsection subsubsection bold 
-%type <node> italic figure par text hrule
+%type <node> italic figure par text hrule tabular row rows cell cells href
 
 %%
 
@@ -68,6 +68,8 @@ content:
   | par
   | figure
   | hrule
+  | tabular
+  | href
   | content list {
     $$ = $1;
     $$->addChild($2);
@@ -101,6 +103,14 @@ content:
     $$->addChild($2);
   }
   | content hrule {
+    $$ = $1;
+    $$->addChild($2);
+  }
+  | content tabular {
+    $$ = $1;
+    $$->addChild($2);
+  }
+  | content href {
     $$ = $1;
     $$->addChild($2);
   }
@@ -187,7 +197,6 @@ par: text PAR text {
     delete $3;
 };
 
-
 text: text STRING {
     $$ = $1;
     $$->data += " " + *$2;
@@ -199,6 +208,49 @@ text: text STRING {
     delete $1;
 };
 
+tabular: BEGIN_TABULAR BEGIN_CURLY TABLE_ARGS END_CURLY HLINE rows END_TABULAR {
+    $$ = astManager.newNode(TABULAR_H);
+    $$->data = *$3; 
+    $$->addChild($6); 
+};
+
+rows: rows row {
+    $$ = $1;
+    $$->addChild($2);
+}
+| row {
+    $$ = $1;
+}
+;
+
+row: cells DSLASH HLINE {
+    $$ = astManager.newNode(ROW_H);
+    $$->addChild($1);
+}
+| cells DSLASH {
+    $$ = astManager.newNode(ROW_H);
+    $$->addChild($1);
+};
+
+cells: cells AMPERSAND cell {
+    $$ = $1;
+    $$->addChild($3);
+}
+| cell {
+    $$ = astManager.newNode(CELL_H); 
+    $$->addChild($1);
+};
+
+cell: STRING {
+    $$ = astManager.newNode(CELL_H);
+    $$->data = *$1;
+    delete $1;
+};
+
+href: HREF BEGIN_CURLY STRING END_CURLY BEGIN_CURLY STRING END_CURLY{
+    $$ = astManager.newNode(HREF_H);
+    $$->data = *$3 + "#" +*$6;
+}
 
 %%
 

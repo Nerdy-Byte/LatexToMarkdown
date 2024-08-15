@@ -34,6 +34,8 @@ converter::converter() {
     myMapping[TITLE_H] = "#";                 // Title (header level 1)
     myMapping[VERBATIM_H] = "```";            // Verbatim text
     myMapping[CAPTION_H] = "![IIT Delhi]";      // Caption for figures
+    myMapping[HRULE_H] = "---";               // Horizontal rule
+    myMapping[HREF_H] = "";                   // Hyperlink
 }
 
 std::string converter::traversal(ASTNode* root) {
@@ -69,6 +71,7 @@ std::string converter::traversal(ASTNode* root) {
             return traverseReference(root, type);
         case HRULE_H:  return "---\n\n";
         case PAR_H: return traverseParagraph(root, type);
+        case HREF_H: return traverseHref(root, type);
 
         default:
             return traverseChildren(root);
@@ -147,6 +150,17 @@ std::string converter::traverseFigure(ASTNode* root, int type) {
 
 std::string converter::traverseLabel(ASTNode* root, int type) {
     return getMapping(LABEL_H) + root->data + "\n\n";
+}
+
+std::string converter::traverseHref(ASTNode* root, int type) {
+    std::string data = root->data, link="", label="";
+    bool flag = true;
+    for(auto x: data){
+        if(x == '#'){ flag = false; continue;}
+        if(flag) link += x;
+        else label += x;
+    }
+    return getMapping(HREF_H) + "[" + link + "]"+ "(" + label + ")" + "\n\n";
 }
 
 std::string converter::traverseReference(ASTNode* root, int type) {

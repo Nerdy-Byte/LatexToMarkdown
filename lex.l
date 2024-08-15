@@ -18,8 +18,9 @@ int prev_state[1] = {0};
 %x TABLE_ARGUMENTS
 %x ENV_FIGURE
 %x FIGURE_ARGUMENTS
-%x MATHMODE
 %x VERBATIUM_TEXT
+%x HREF_PATH
+%x HREF_TAG
 
 OPERATORS [+*\-\/\^=\(\)]
 SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
@@ -30,67 +31,82 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 <INITIAL>\n                         ; 
 
-<INITIAL>"\\documentclass{article}" { cout << " DOCUMENT CLASS\n"; }
+<INITIAL>"\\documentclass{article}"   { cout << " DOCUMENT CLASS\n"; }
 
-<INITIAL>"\\usepackage{graphicx}"   { cout << " USE PACKAGE GRAPHICX\n"; }
+<INITIAL>"\\usepackage{graphicx}"     { cout << " USE PACKAGE GRAPHICX\n"; }
 
-<INITIAL>"\\usepackage{hyperref}"   { cout << " USE PACKAGE HYPERREF\n"; }
+<INITIAL>"\\usepackage{hyperref}"     { cout << " USE PACKAGE HYPERREF\n"; }
 
-<INITIAL>"\\title{"                 { BEGIN(TITLE_CONTENT); return TITLE; }
+<INITIAL>"\\title{"                   { BEGIN(TITLE_CONTENT); return TITLE; }
 
-<TITLE_CONTENT>"}"                  { BEGIN(INITIAL); return END_CURLY; }
+<TITLE_CONTENT>"}"                    { BEGIN(INITIAL); return END_CURLY; }
 
-<INITIAL>"\\date{"                  { BEGIN(DATE_CONTENT); return DATE; }
+<INITIAL>"\\date{"                    { BEGIN(DATE_CONTENT); return DATE; }
 
-<DATE_CONTENT>"}"                   { BEGIN(INITIAL); return END_CURLY; }
+<DATE_CONTENT>"}"                     { BEGIN(INITIAL); return END_CURLY; }
 
-<INITIAL>"\\begin{document}"        { return BEGIN_DOCUMENT; }
+<INITIAL>"\\begin{document}"          { return BEGIN_DOCUMENT; }
 
-"\\begin{itemize}"                  { return BEGIN_ITEMIZE; }
+"\\begin{itemize}"                    { return BEGIN_ITEMIZE; }
 
-"\\end{itemize}"                    { return END_ITEMIZE; }
+"\\end{itemize}"                      { return END_ITEMIZE; }
 
-"\\begin{enumerate}"                { return BEGIN_ENUMERATE; }
+"\\begin{enumerate}"                  { return BEGIN_ENUMERATE; }
 
-"\\end{enumerate}"                  { return END_ENUMERATE; }
+"\\end{enumerate}"                    { return END_ENUMERATE; }
 
-"\\item"                            { return ITEM; }
+"\\item"                              { return ITEM; }
 
-"\\section"                         { return SECTION; }
+"\\section"                           { return SECTION; }
 
-"\\subsection"                      { return SUBSECTION; }
+"\\subsection"                        { return SUBSECTION; }
 
-"\\subsubsection"                   { return SUBSUBSECTION; }
+"\\subsubsection"                     { return SUBSUBSECTION; }
 
-"\\par"                             { return PAR; }
+"\\par"                               { return PAR; }
 
-<INITIAL,ENV_TABULAR>"\\textbf"     { return T_BF; }
+<INITIAL,ENV_TABULAR>"\\href"         { BEGIN(HREF_PATH); return HREF; }
 
-<INITIAL,ENV_TABULAR>"\\textit"     { return T_IT; }
+<HREF_PATH>"{"                        { return BEGIN_CURLY; }
 
-<INITIAL,ENV_TABULAR>"\\underline"  { return T_U; }
+<HREF_PATH>"}"                        { BEGIN(HREF_TAG); return END_CURLY; }
 
-<INITIAL,ENV_TABULAR,MATHMODE,ENV_FIGURE>"{"   {  return BEGIN_CURLY; }
+<HREF_TAG>"{"                         { return BEGIN_CURLY; }
 
-<INITIAL,ENV_TABULAR,MATHMODE>"}"   {  BEGIN(INITIAL);return END_CURLY; }
+<HREF_TAG>"}"                         { BEGIN(INITIAL); return END_CURLY; }
 
-"\\begin{tabular}"                  { BEGIN(TABLE_ARGUMENTS); return BEGIN_TABULAR; }
+<INITIAL,ENV_TABULAR>"\\textbf"       { return T_BF; }
 
-<ENV_TABULAR>"\\end{tabular}"       { BEGIN(INITIAL); prev_state[0] = 0; return END_TABULAR; }
+<INITIAL,ENV_TABULAR>"\\textit"       { return T_IT; }
 
-<TABLE_ARGUMENTS>\{                 { return BEGIN_CURLY;}
+<INITIAL,ENV_TABULAR>"\\underline"    { return T_U; }
 
-<TABLE_ARGUMENTS>[lcr|]*            {
+<INITIAL,ENV_TABULAR,ENV_FIGURE>"{"   { return BEGIN_CURLY; }
+
+<INITIAL,ENV_TABULAR>"}"              { BEGIN(INITIAL);return END_CURLY; }
+
+"\\begin{tabular}"                    { BEGIN(TABLE_ARGUMENTS); return BEGIN_TABULAR; }
+
+<ENV_TABULAR>"\\end{tabular}"         { BEGIN(INITIAL); prev_state[0] = 0; return END_TABULAR; }
+
+<TABLE_ARGUMENTS>"{"                  { return BEGIN_CURLY;}
+
+<TABLE_ARGUMENTS>[lcr|]*              {
     std::string res = "";
+    cout<<yytext<<endl;
     for (int i = 0; i < strlen(yytext); i++) {
         if (yytext[i] == 'l' || yytext[i] == 'c' || yytext[i] == 'r') {
             res += yytext[i];
         }
     }
     yylval.svalue = new string(res);
+    
     return TABLE_ARGS;
 }
+
+
 <INITIAL>"\\hrule"                 { return HRULE; }
+
 <TABLE_ARGUMENTS>"}"               { BEGIN(ENV_TABULAR); prev_state[0] = 1; return END_CURLY; }
 
 <ENV_TABULAR>"&"                   { return AMPERSAND; }
@@ -110,10 +126,7 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 <INITIAL>"\\end{document}"         {  return END_DOCUMENT; }
 
-<INITIAL,DATE_CONTENT,TITLE_CONTENT,ENV_TABULAR,ENV_FIGURE>([a-zA-Z0-9 ]|{SPECIAL})* {
-    yylval.svalue = new string(yytext);
-    return STRING;
-}
+
 
 "\\begin{figure}"                  { BEGIN(ENV_FIGURE); prev_state[0] = 0; return BEGIN_FIGURE; }
 
@@ -152,6 +165,11 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 <FIGURE_ARGUMENTS>"]"               {  BEGIN(ENV_FIGURE); return END_SQUARE; }
 
-. { ; }
+<INITIAL,DATE_CONTENT,TITLE_CONTENT,ENV_TABULAR,ENV_FIGURE,HREF_PATH,HREF_TAG>([a-zA-Z0-9 ]|{SPECIAL})* {
+    yylval.svalue = new string(yytext);
+    return STRING;
+}
+
+.                                   { ; }
 
 %%
