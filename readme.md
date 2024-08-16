@@ -9,7 +9,7 @@ This project is a C++ application that converts LaTeX documents into Markdown fo
 - Convert LaTeX sections and subsections to Markdown headers.
 - Handle ordered and unordered lists.
 - Support for tables, figures, and verbatim text.
-- Conversion of LaTeX formatting (bold, italic, underline) to Markdown.
+- Conversion of LaTeX formatting (bold, italic) to Markdown.
 - Output Markdown to a file.
 
 ## Project Structure
