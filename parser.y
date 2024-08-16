@@ -27,9 +27,11 @@ extern ASTNode* root;
 %token BEGIN_ENUMERATE END_ENUMERATE SECTION SUBSECTION SUBSUBSECTION ENDL T_BF T_IT T_U BEGIN_TABULAR END_TABULAR
 %token HLINE AMPERSAND DSLASH BEGIN_FIGURE BEGIN_SQUARE END_FIGURE END_SQUARE INCLUDE_GRAPHICS CAPTION COMMA
 %token BEGIN_CURLY PAR LABEL_TAG REF_TAG HRULE HREF
-
 %type <node> start title date begin_document content list ul ol items verbatim section subsection subsubsection bold 
-%type <node> italic figure par text hrule tabular row rows cell cells href
+%type <node> italic figure par text hrule tabular row rows cell cells href code content_element
+
+%left PAR  /* Adjust precedence if necessary */
+%left AMPERSAND DSLASH
 
 %%
 
@@ -58,6 +60,19 @@ begin_document: BEGIN_DOCUMENT content END_DOCUMENT {
 };
 
 content:
+    content_element {
+        $$ = astManager.newNode(DOCUMENT_H);
+        $$->addChild($1);
+    }
+    | content content_element {
+        $$ = $1;
+        $$->addChild($2);
+    }
+    | /* empty */ {
+        $$ = astManager.newNode(DOCUMENT_H);
+    };
+
+content_element:
     verbatim
   | list
   | section
@@ -65,53 +80,10 @@ content:
   | subsubsection
   | text
   | figure
-  | par
   | hrule
   | tabular
-  | href
-  | content list {
-    $$ = $1;
-    $$->addChild($2);
-  }
-  | content section {
-    $$ = $1;
-    $$->addChild($2);
-  }
-  | content subsection {
-    $$ = $1;
-    $$->addChild($2);
-  }
-  | content subsubsection {
-    $$ = $1;
-    $$->addChild($2);
-  }
-  | content figure {
-    $$ = $1;
-    $$->addChild($2);
-  }
-  | content par {
-    $$ = $1;
-    $$->addChild($2);
-  }
-  | content hrule {
-    $$ = $1;
-    $$->addChild($2);
-  }
-  | content tabular {
-    $$ = $1;
-    $$->addChild($2);
-  }
-  | content href {
-    $$ = $1;
-    $$->addChild($2);
-  }
-  | content text {
-    $$ = $1;
-    $$->addChild($2);
-  }
-  | /* empty */ {
-    $$ = astManager.newNode(DOCUMENT_H);
-  };
+  | href;
+
 
 list: ul { $$ = $1; }
     | ol { $$ = $1; };
@@ -157,11 +129,27 @@ subsubsection: SUBSUBSECTION BEGIN_CURLY STRING END_CURLY {
     delete $3;
 };
 
-verbatim: START_VERBATIM CODE END_VERBATIM {
+verbatim: START_VERBATIM code END_VERBATIM {
     $$ = astManager.newNode(VERBATIM_H);
-    $$->data = *$2;
-    delete $2;
+    $$->data = $2->data;  // Assign the concatenated code block to the VERBATIM_H node
+    delete $2;  // Clean up the concatenated string
 };
+
+code: code CODE {
+    // Append the new CODE token to the VERBATIM_H node's data
+    (yyval.node) = (yyvsp[-1].node);  // Use the existing VERBATIM_H node
+    (yyval.node)->data += *(yyvsp[0].svalue);  // Concatenate the new CODE data
+    delete (yyvsp[0].svalue);  // Clean up the CODE token
+}
+| CODE {
+    // Initialize the VERBATIM_H node with the first CODE token
+    (yyval.node) = astManager.newNode(VERBATIM_H);
+    (yyval.node)->data = *(yyvsp[0].svalue);  // Assign the CODE token data
+    delete (yyvsp[0].svalue);  // Clean up the CODE token
+};
+
+
+
 
 bold: T_BF BEGIN_CURLY STRING END_CURLY {
     $$ = astManager.newNode(TEXTBF_H);
@@ -183,63 +171,51 @@ figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY STRING END
 
 text:
     text STRING {
-        // Continue with the current TEXT_H node, adding STRING as a child
         $$ = $1;
-        ASTNode* stringNode = astManager.newNode(STRING_H);  // Create STRING_H node
-        stringNode->data = *$2;  // Set the string data
-        delete $2;  // Clean up the old string
-        $$->addChild(stringNode);  // Add the STRING_H node as a child of TEXT_H
+        ASTNode* stringNode = astManager.newNode(STRING_H);
+        stringNode->data = *$2;
+        delete $2;
+        $$->addChild(stringNode);
     }
     | text bold {
-        // Continue using the existing TEXT_H node
         $$ = $1;
-        $$->addChild($2);  // Add the bold text node as a child
+        $$->addChild($2);
     }
     | text italic {
-        // Continue using the existing TEXT_H node
         $$ = $1;
-        $$->addChild($2);  // Add the italic text node as a child
+        $$->addChild($2);
     }
-    | bold {
-        // Create a new TEXT_H node for bold text
-        $$ = astManager.newNode(TEXT_H);
-        $$->addChild($1);  // Add the bold text node as a child
-    }
-    | italic {
-        // Create a new TEXT_H node for italic text
-        $$ = astManager.newNode(TEXT_H);
-        $$->addChild($1);  // Add the italic text node as a child
-    }
-    | STRING {
-        // Create a STRING_H node for plain text
-        $$ = astManager.newNode(STRING_H);
-        $$->data = *$1;  // Set the data to the string value
-        delete $1;  // Clean up the old string
-    };
-
-par:
-    text PAR text {
-        // Create a PAR_H node and add the two TEXT_H nodes as children
-        $$ = astManager.newNode(PAR_H);
-        $$->addChild($1);  // Add the first TEXT_H node
-        $$->addChild($3);  // Add the second TEXT_H node
+    | text PAR text {
+        $$ = $1;
+        ASTNode* parNode = astManager.newNode(PAR_H);
+        parNode->addChild($3);  // Add the following text as a child of PAR_H
+        $$->addChild(parNode);
     }
     | text PAR {
-        // Create a PAR_H node with only the first part of the text
-        $$ = astManager.newNode(PAR_H);
-        $$->addChild($1);  // Add the TEXT_H node
+        $$ = $1;
+        ASTNode* parNode = astManager.newNode(PAR_H);
+        $$->addChild(parNode);
     }
     | PAR text {
-        // Create a PAR_H node with only the second part of the text
         $$ = astManager.newNode(PAR_H);
-        $$->addChild($2);  // Add the TEXT_H node
+        $$->addChild($2);
     }
     | PAR {
-        // Create an empty PAR_H node
         $$ = astManager.newNode(PAR_H);
+    }
+    | bold {
+        $$ = astManager.newNode(TEXT_H);
+        $$->addChild($1);
+    }
+    | italic {
+        $$ = astManager.newNode(TEXT_H);
+        $$->addChild($1);
+    }
+    | STRING {
+        $$ = astManager.newNode(STRING_H);
+        $$->data = *$1;
+        delete $1;
     };
-
-
 
 tabular: BEGIN_TABULAR BEGIN_CURLY TABLE_ARGS END_CURLY HLINE rows END_TABULAR {
     $$ = astManager.newNode(TABULAR_H);

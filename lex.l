@@ -114,14 +114,14 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 <ENV_TABULAR>"\\hline"                { return HLINE; }
 
-\\begin\{verbatim\}                   { BEGIN(VERBATIUM_MODE); return START_VERBATIM; }
+"\\begin{verbatim}"                   { BEGIN(VERBATIUM_MODE); return START_VERBATIM; }
 
 <VERBATIUM_MODE>{
     "\\end{verbatim}"                 { BEGIN(INITIAL); return END_VERBATIM; }
-    
-    [^\n]+                            { yylval.svalue = new string(yytext); return CODE; }
-    \n                                { /* Match and ignore newline */ }
+    [^\n]+                            { yylval.svalue = new std::string(yytext); return CODE; }
+    \n                                { yylval.svalue = new std::string("\n"); return CODE; }
 }
+
 
 <INITIAL>"\\end{document}"            { return END_DOCUMENT; }
 
@@ -147,11 +147,11 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 <INITIAL,ENV_FIGURE>"\\includegraphics" { return INCLUDE_GRAPHICS; }
 
-<ENV_FIGURE,INITIAL>"["                { BEGIN(FIGURE_ARGUMENTS); return BEGIN_SQUARE; }
+<ENV_FIGURE,INITIAL>"["                 { BEGIN(FIGURE_ARGUMENTS); return BEGIN_SQUARE; }
 
-<ENV_FIGURE>"\\caption"                { return CAPTION; }
+<ENV_FIGURE>"\\caption"                 { return CAPTION; }
 
-<ENV_FIGURE>"\\label"                  { return LABEL_TAG; }
+<ENV_FIGURE>"\\label"                   { return LABEL_TAG; }
 
 <FIGURE_ARGUMENTS>[a-zA-Z0-9=.,\s\-\\]+ {
     std::string fin(yytext);

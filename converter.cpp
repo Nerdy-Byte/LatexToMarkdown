@@ -72,7 +72,7 @@ std::string converter::traversal(ASTNode* root) {
         case HRULE_H:  return "\n\n---\n\n";
         case PAR_H: return traverseParagraph(root, type);
         case HREF_H: return traverseHref(root, type);
-
+        case TABULAR_H: return traverseTable(root, type);
         default:
             return traverseChildren(root);
     }
@@ -178,6 +178,80 @@ std::string converter::traverseChildren(ASTNode* root) {
 std::string converter::getMapping(int type) {
     return myMapping[type];
 }
+
+std::string converter::traverseTable(ASTNode* root, int type) {
+    std::string result;
+
+    // Iterate through all rows in the table
+    for (auto row : root->children) {
+        if (row->node_type == ROW_H) {
+            std::string rowResult;
+
+            // Iterate through all cells in the row
+            for (auto cell : row->children) {
+                if (cell->node_type == CELL_H) {
+                    // Extract cell data and add it to the row string
+                    std::string cellData;
+                    for (auto innerCell : cell->children) {
+                        if (innerCell->node_type == CELL_H) {
+                            cellData += innerCell->data;
+                        }
+                    }
+
+                    // Add cell data to the row with formatting
+                    rowResult += cellData + " | ";
+                }
+            }
+            // Trim the last pipe character and add a newline after the row
+            if (!rowResult.empty()) {
+                rowResult = rowResult.substr(0, rowResult.length() - 3); // Remove trailing " | "
+            }
+            rowResult += "\n";
+            result += rowResult;
+        }
+    }
+
+    for (auto row : root->children[0]->children) {
+        if (row->node_type == ROW_H) {
+            std::string rowResult;
+
+            // Iterate through all cells in the row
+            for (auto cell : row->children) {
+                if (cell->node_type == CELL_H) {
+                    // Extract cell data and add it to the row string
+                    std::string cellData;
+                    for (auto innerCell : cell->children) {
+                        if (innerCell->node_type == CELL_H) {
+                            cellData += innerCell->data;
+                        }
+                    }
+
+                    // Add cell data to the row with formatting
+                    rowResult += cellData + " | ";
+                }
+            }
+            // Trim the last pipe character and add a newline after the row
+            if (!rowResult.empty()) {
+                rowResult = rowResult.substr(0, rowResult.length() - 3); 
+            }
+            rowResult += "\n";
+            result += rowResult;
+        }
+    }
+
+    // Adding formatting (e.g., column separators)
+    if (!result.empty()) {
+        // Add a separator line after the header (first row)
+        size_t pos = result.find('\n');
+        if (pos != std::string::npos) {
+            std::string separator(pos, '-'); // Create a separator line of dashes
+            result.insert(pos + 1, separator + "\n"); // Insert after the first row
+        }
+    }
+
+    return result;
+}
+
 
 std::string converter::traverseParagraph(ASTNode* root, int type) {
     std::string result;
