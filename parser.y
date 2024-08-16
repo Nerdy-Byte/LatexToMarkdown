@@ -1,4 +1,6 @@
 %{
+//Includes necessary headers and libraries.
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -9,16 +11,25 @@
 
 using namespace std;
 
+//Declares external functions (yylex, yyerror) and the root ASTNode pointer, which will hold the final AST.
+
 extern int yylex();
 extern void yyerror(const char*);
 extern FILE *yyin;
 extern ASTNode* root;
 %}
 
+//Defines a union to handle different types of values in the grammar. The parser can return either strings (svalue) or AST nodes (node).
+
 %union {
     std::string* svalue;
     ASTNode* node;
 }
+
+/*
+Defines tokens for different LaTeX-like elements and maps them to the appropriate svalue or node type.
+Specifies the types of non-terminal symbols in the grammar.
+*/
 
 %start start 
 
@@ -30,11 +41,17 @@ extern ASTNode* root;
 %type <node> start title date begin_document content list ul ol items verbatim section subsection subsubsection bold 
 %type <node> italic figure par text hrule tabular row rows cell cells href code content_element
 
-%left PAR  /* Adjust precedence if necessary */
+/*Specifies the precedence of certain operators to resolve conflicts during parsing.*/
+
+%left PAR
 %left AMPERSAND DSLASH
 
 %%
 
+/*This grammar allows parsing a LaTeX-like language into an AST, which can later be traversed or transformed into different formats like Markdown.*/
+
+
+/*The start rule combines the title, date, and document content into a DOCUMENT_H node.*/
 start: title date begin_document {
     root = astManager.newNode(DOCUMENT_H);
     root->addChild($1);
@@ -42,6 +59,7 @@ start: title date begin_document {
     root->addChild($3);
 };
 
+/*These rules create TITLE_H and DATE_H nodes, storing the corresponding string data.*/
 title: TITLE STRING END_CURLY {
     $$ = astManager.newNode(TITLE_H);
     $$->data = *$2;
@@ -54,10 +72,14 @@ date: DATE STRING END_CURLY {
     delete $2;
 };
 
+/*Defines the structure of the document, where content is added as a child node of the DOCUMENT_H node.*/
 begin_document: BEGIN_DOCUMENT content END_DOCUMENT {
     $$ = astManager.newNode(DOCUMENT_H);
     $$->addChild($2);
 };
+
+/*content can consist of various content_element types, including text, lists, figures, tables, etc.
+Content elements are added as children to the document node.*/
 
 content:
     content_element {
@@ -84,20 +106,25 @@ content_element:
   | tabular
   | href;
 
+/*Handles unordered (ul) and ordered (ol) lists, where items are added as children to ITEMIZE_H or ENUMERATE_H nodes.*/
 
+// Top-level list rules
 list: ul { $$ = $1; }
     | ol { $$ = $1; };
 
+// Unordered list
 ul: BEGIN_ITEMIZE items END_ITEMIZE {
     $$ = astManager.newNode(ITEMIZE_H);
     $$->addChild($2);
 };
 
+// Ordered list
 ol: BEGIN_ENUMERATE items END_ENUMERATE {
     $$ = astManager.newNode(ENUMERATE_H);
     $$->addChild($2);
 };
 
+// Items in lists
 items: items ITEM STRING {
     $$ = $1;
     ASTNode* itemNode = astManager.newNode(ITEM_H);
@@ -109,7 +136,16 @@ items: items ITEM STRING {
     $$ = astManager.newNode(ITEM_H);
     $$->data = *$2;
     delete $2;
+}
+    | items list { // Handle nested lists
+    $$ = $1;
+    $$->addChild($2);
+}
+    | list { // Handle case where the list starts directly with a nested list
+    $$ = $1;
 };
+
+/*Handles sections, subsections, and subsubsections by creating corresponding nodes and assigning the section title data.*/
 
 section: SECTION BEGIN_CURLY STRING END_CURLY {
     $$ = astManager.newNode(SECTION_H);
@@ -128,6 +164,8 @@ subsubsection: SUBSUBSECTION BEGIN_CURLY STRING END_CURLY {
     $$->data = *$3;
     delete $3;
 };
+
+/*Handles verbatim environments by concatenating CODE tokens into a single VERBATIM_H node's data.*/
 
 verbatim: START_VERBATIM code END_VERBATIM {
     $$ = astManager.newNode(VERBATIM_H);
@@ -149,7 +187,7 @@ code: code CODE {
 };
 
 
-
+/*Handles bold (TEXTBF_H) and italic (TEXTIT_H) text formatting.*/
 
 bold: T_BF BEGIN_CURLY STRING END_CURLY {
     $$ = astManager.newNode(TEXTBF_H);
@@ -163,11 +201,15 @@ italic: T_IT BEGIN_CURLY STRING END_CURLY {
     delete $3;
 };
 
+/*Handles figures, where the image path is stored in the FIGURE_H node's data.*/
+
 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY STRING END_CURLY {
     $$ = astManager.newNode(FIGURE_H);
     $$->data = *$6;
     delete $6;
 };
+
+/*Handles text and paragraph (PAR_H) elements, where different text formatting (bold, italic) and plain text (STRING_H) are combined.*/
 
 text:
     text STRING {
@@ -217,6 +259,8 @@ text:
         delete $1;
     };
 
+/*Handles tables (TABULAR_H) by defining rows (ROW_H) and cells (CELL_H) within the table.*/
+
 tabular: BEGIN_TABULAR BEGIN_CURLY TABLE_ARGS END_CURLY HLINE rows END_TABULAR {
     $$ = astManager.newNode(TABULAR_H);
     $$->data = *$3;
@@ -256,12 +300,16 @@ cell: STRING {
     delete $1;
 };
 
+/*Handles hyperlinks, storing the link and label in the HREF_H node.*/
+
 href: HREF BEGIN_CURLY STRING END_CURLY BEGIN_CURLY STRING END_CURLY {
     $$ = astManager.newNode(HREF_H);
     $$->data = *$3 + "#" + *$6;
     delete $3;
     delete $6;
 };
+
+/*Handles horizontal rules by creating an HRULE_H node.*/
 
 hrule: HRULE {
     $$ = astManager.newNode(HRULE_H);

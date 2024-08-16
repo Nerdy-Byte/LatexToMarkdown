@@ -5,4 +5,4 @@ parser.tab.c parser.tab.h: ast.cpp parser.y
 lex.yy.c: lex.l parser.tab.h
 	@flex lex.l
 clean:
-	@rm -f compiler parser.tab.c parser.tab.h lex.yy.c *.md *.o
+	@rm -f compiler parser.tab.c parser.tab.h lex.yy.c out.md *.o ast.txt

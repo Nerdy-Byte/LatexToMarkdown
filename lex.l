@@ -93,7 +93,6 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 <TABLE_ARGUMENTS>[lcr|]*              {
     std::string res = "";
-    cout << yytext << endl;
     for (int i = 0; i < strlen(yytext); i++) {
         if (yytext[i] == 'l' || yytext[i] == 'c' || yytext[i] == 'r') {
             res += yytext[i];

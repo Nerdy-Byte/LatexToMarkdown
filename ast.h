@@ -10,39 +10,41 @@
 
 using namespace std;
 
+// Enumeration for the different types of nodes in the AST
 enum NodeType {
-    AST_H,
-    DOCUMENT_H,
-    SECTION_H,
-    SUBSECTION_H,
-    SUBSUBSECTION_H,
-    TEXTBF_H,
-    TEXTIT_H,
-    UNDERLINE_H,
-    STRING_H,
-    ENUMERATE_H,
-    ITEMIZE_H,
-    ITEM_H,
-    PAR_H,
-    TABULAR_H,
-    ROW_H,
-    CELL_H,
-    FIGURE_H,
-    CAPTION_H,
-    INCLUDE_GRAPHICS_H,
-    LABEL_H,
-    REF_H,
-    HLINE_H,
-    SQRT_H,
-    TITLE_H,
-    DATE_H,
-    VERBATIM_H,
-    HRULE_H,
-    HREF_H,
-    TEXT_H,
-    CODE_H
+    AST_H,                // Abstract Syntax Tree root
+    DOCUMENT_H,           // Document node
+    SECTION_H,            // Section node
+    SUBSECTION_H,         // Subsection node
+    SUBSUBSECTION_H,      // Subsubsection node
+    TEXTBF_H,             // Bold text node
+    TEXTIT_H,             // Italic text node
+    UNDERLINE_H,          // Underlined text node
+    STRING_H,             // String (plain text) node
+    ENUMERATE_H,          // Enumerate environment node
+    ITEMIZE_H,            // Itemize environment node
+    ITEM_H,               // Item node
+    PAR_H,                // Paragraph node
+    TABULAR_H,            // Tabular environment node
+    ROW_H,                // Table row node
+    CELL_H,               // Table cell node
+    FIGURE_H,             // Figure environment node
+    CAPTION_H,            // Figure caption node
+    INCLUDE_GRAPHICS_H,   // Include graphics node
+    LABEL_H,              // Label node
+    REF_H,                // Reference node
+    HLINE_H,              // Horizontal line node in tables
+    SQRT_H,               // Square root node
+    TITLE_H,              // Title node
+    DATE_H,               // Date node
+    VERBATIM_H,           // Verbatim environment node
+    HRULE_H,              // Horizontal rule node
+    HREF_H,               // Hyperlink node
+    TEXT_H,               // Text node with formatting (e.g., bold, italic)
+    CODE_H                // Code node (e.g., for verbatim content)
 };
 
+// Converts a NodeType enum value to a string for printing purposes
 inline string nodeTypeToString(NodeType type) {
     switch (type) {
         case AST_H: return "AST_H";
@@ -79,35 +81,45 @@ inline string nodeTypeToString(NodeType type) {
     }
 }
 
-class ASTNode
-{
+// ASTNode class represents a node in the AST
+class ASTNode {
 public:
-    NodeType node_type;
-    string data;
-    string attributes;
-    vector<ASTNode *> children;
+    NodeType node_type;             // Type of the node (e.g., SECTION_H, ITEM_H)
+    string data;                    // Data associated with the node (e.g., text content)
+    string attributes;              // Additional attributes (e.g., label, reference)
+    vector<ASTNode *> children;     // Child nodes
 
-    ASTNode();
-    ASTNode(NodeType type, const string &data = "", const string &attributes = "");
-    ~ASTNode();
-    
+    // Constructors
+    ASTNode();  // Default constructor
+    ASTNode(NodeType type, const string &data = "", const string &attributes = "");  // Parameterized constructor
+
+    // Destructor
+    ~ASTNode();  // Destructor to clean up children nodes
+
+    // Adds a child node to the current node
     void addChild(ASTNode *child);
+
+    // Prints the node and its children with indentation based on the depth in the tree
     void print(int tabs = 0) const;
 };
 
+// ASTManager class manages the AST, including creating and printing nodes
 class ASTManager {
 public:
-    ASTManager();
-    ~ASTManager();
+    // Constructors and Destructor
+    ASTManager();   // Default constructor
+    ~ASTManager();  // Destructor
 
-    // Node creation
-    ASTNode* newNode(NodeType type);
-    ASTNode* newNode();
-    ASTNode* newNode(const string& data);
-    
+    // Node creation methods
+    ASTNode* newNode(NodeType type);  // Create a new node with a specified type
+    ASTNode* newNode();               // Create a default node
+    ASTNode* newNode(const string& data);  // Create a new node with data
+
+    // Prints the AST starting from the root node
     void print(ASTNode* root, int tabs = 0) const;
 };
 
+// Global ASTManager instance to be used across the program
 extern ASTManager astManager; 
 
 #endif // _AST_H
