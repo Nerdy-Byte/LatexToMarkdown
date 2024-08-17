@@ -5,7 +5,7 @@
 int section_no = 0;          // Counter for sections
 int subsection_no = 0;      // Counter for subsections
 int subsubsection_no = 0;   // Counter for subsubsections
-
+int nested = 0;             // Counter for nested lists
 // Converts an integer to a string
 std::string myString(int n) {
     std::stringstream ss;
@@ -18,8 +18,8 @@ converter::converter() {
     myMapping[SECTION_H] = "##";              // Section (Markdown heading level 2)
     myMapping[SUBSECTION_H] = "###";          // Subsection (Markdown heading level 3)
     myMapping[SUBSUBSECTION_H] = "####";      // Subsubsection (Markdown heading level 4)
-    myMapping[ITEMIZE_H] = "-";               // Unordered list (Markdown list item)
-    myMapping[ENUMERATE_H] = "1.";            // Ordered list (Markdown list item with number)
+    myMapping[ITEMIZE_H] = "";               // Unordered list (Markdown list item)
+    myMapping[ENUMERATE_H] = "";            // Ordered list (Markdown list item with number)
     myMapping[ITEM_H] = "- ";                 // List item (Markdown list item) - for ordered lists
     myMapping[TEXTBF_H] = "**";               // Bold text (Markdown bold)
     myMapping[TEXTIT_H] = "*";                // Italic text (Markdown italic)
@@ -44,13 +44,19 @@ std::string converter::traversal(ASTNode* root) {
     if (!root) return "";  // Return empty string if root is null
     int type = root->node_type;
     switch (type) {
-        case ITEM_H: return root->data + "\n";  // Directly return item data
-        case STRING_H: return root->data + "\n"; // Directly return string data
+        case ITEM_H: return traversal(root->children[0]);  // Directly return item data
+        case STRING_H: 
+            {
+                string str = root->data; 
+                if (!root->children.empty()) 
+                    return str +" "+traversal(root->children[0]); 
+                return str;
+            }
         case SECTION_H: return traverseSection(root, type);  // Handle section nodes
         case SUBSECTION_H: return traverseSubSection(root, type);  // Handle subsection nodes
         case SUBSUBSECTION_H: return traverseSubsubSection(root, type); // Handle subsubsection nodes
         case ITEMIZE_H:
-        case ENUMERATE_H: return traverseList(root, type);  // Handle list nodes
+        case ENUMERATE_H: nested++; return traverseList(root, type);  // Handle list nodes
         case VERBATIM_H: return traverseVerbatim(root, type);  // Handle verbatim nodes
         case TEXTBF_H:
         case TEXTIT_H:
@@ -58,7 +64,6 @@ std::string converter::traversal(ASTNode* root) {
         case TITLE_H: return traverseTitle(root, type);  // Handle title nodes
         case DATE_H: return traverseDate(root, type);  // Handle date nodes
         case FIGURE_H: return traverseFigure(root, type);  // Handle figure nodes
-        case LABEL_H: return traverseLabel(root, type);  // Handle label nodes
         case REF_H: return traverseReference(root, type);  // Handle reference nodes
         case HRULE_H: return "\n\n---\n\n";  // Handle horizontal rules
         case PAR_H: return traverseParagraph(root, type);  // Handle paragraph nodes
@@ -91,33 +96,50 @@ std::string converter::traverseSubsubSection(ASTNode* root, int type) {
 
 // Converts LIST nodes (either ITEMIZE or ENUMERATE) to Markdown format
 std::string converter::traverseList(ASTNode* root, int type) {
-    std::string result;
-    ASTNode *temp = root->children[0];
-    if(type == ITEMIZE_H){
-        for (auto& child : root->children) {
-            result += getMapping(type) + " " + traversal(child) + "\n";
+    std::string result = "\n";
+    std::string indent(nested-1, '\t');  // Create indentation based on nesting level
+
+    if (type == ITEMIZE_H) {
+        // Handle unordered list
+        for (const auto& child : root->children) {
+            std::string itemText = traversal(child);
+            if (!itemText.empty() && itemText != "\n" && itemText != " ") {
+                result += indent + "-" + itemText + "\n";
+            }
         }
-        for (auto& child : temp->children) {
-            result += getMapping(type) + " " + traversal(child) + "\n";
-        }
-    }
-    else{
+    } else {
+        // Handle ordered list
         int count = 1;
-        for (auto& child : root->children) {
-            result += std::to_string(count) + " " + traversal(child) + "\n";
-            count++;
-        }
-        for (auto& child : temp->children) {
-            result += std::to_string(count) + " " + traversal(child) + "\n";
-            count++;
+        for (const auto& child : root->children) {
+            std::string itemText = traversal(child);
+            if (!itemText.empty() && itemText != "\n" && itemText != " ") {
+                result += indent + std::to_string(count) + " " + itemText + "\n";
+                count++;
+            }
         }
     }
-    return result + "\n";
+
+    // Handle nested lists
+    for (const auto& child : root->children) {
+        if (child->node_type == ITEM_H) {
+            nested++;
+            for (const auto& grandchild : child->children) {
+                std::string nestedText = traversal(grandchild);
+                if (!nestedText.empty() && nestedText != "\n" && nestedText != " ") {
+                    result += traverseList(grandchild, type);  // Recursively handle nested lists
+                }
+            }
+            nested--;
+        }
+    }
+
+    return result;
 }
+
 
 // Converts VERBATIM nodes (code blocks) to Markdown format
 std::string converter::traverseVerbatim(ASTNode* root, int type) {
-    return getMapping(type) + "\n" + root->data + "\n" + getMapping(type) + "\n\n";
+    return "\n" + getMapping(type) + "\n" + root->data + "\n" + getMapping(type) + "\n\n";
 }
 
 // Converts font formatting nodes (e.g., bold, italic) to Markdown format
@@ -127,11 +149,13 @@ std::string converter::traverseFont(ASTNode* root, int type) {
 
 // Converts DATE nodes to Markdown format
 std::string converter::traverseDate(ASTNode* root, int type) {
+    if(root->data.empty()) return "";
     return getMapping(type) + root->data + "\n\n";
 }
 
 // Converts TITLE nodes to Markdown format
 std::string converter::traverseTitle(ASTNode* root, int type) {
+    if(root->data.empty()) return "";
     return getMapping(type) + " " + root->data + "\n\n";
 }
 
@@ -146,10 +170,6 @@ std::string converter::traverseFigure(ASTNode* root, int type) {
     return result + "\n\n";
 }
 
-// Converts LABEL nodes to Markdown format
-std::string converter::traverseLabel(ASTNode* root, int type) {
-    return getMapping(LABEL_H) + root->data + "\n\n";
-}
 
 // Converts HREF nodes (hyperlinks) to Markdown format
 std::string converter::traverseHref(ASTNode* root, int type) {
@@ -197,7 +217,7 @@ std::string converter::traverseTable(ASTNode* root, int type) {
                     std::string cellData = " | ";
                     for (auto innerCell : cell->children) {
                         if (innerCell->node_type == CELL_H) {
-                            cellData += innerCell->data + " | ";
+                            cellData += traversal(innerCell) + " | ";
                         }
                         count++;
                     }
@@ -226,7 +246,7 @@ std::string converter::traverseTable(ASTNode* root, int type) {
                     std::string cellData = " | ";
                     for (auto innerCell : cell->children) {
                         if (innerCell->node_type == CELL_H) {
-                            cellData += innerCell->data+" | ";
+                            cellData += traversal(innerCell)+" | ";
                         }
                     }
 
@@ -270,7 +290,7 @@ std::string converter::traverseParagraph(ASTNode* root, int type) {
         result += traverseFont(child, child->node_type); 
     }
     for (auto& child : root->children) {
-        result += traverseFont(child, child->node_type); 
+        result += "\n\n"+traverseFont(child, child->node_type); 
     }
     
     return result + "\n\n";

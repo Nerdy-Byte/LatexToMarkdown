@@ -39,9 +39,9 @@ Specifies the types of non-terminal symbols in the grammar.
 %token HLINE AMPERSAND DSLASH BEGIN_FIGURE BEGIN_SQUARE END_FIGURE END_SQUARE INCLUDE_GRAPHICS CAPTION COMMA
 %token BEGIN_CURLY PAR LABEL_TAG REF_TAG HRULE HREF
 %type <node> start title date begin_document content list ul ol items verbatim section subsection subsubsection bold 
-%type <node> italic figure par text hrule tabular row rows cell cells href code content_element
+%type <node> italic figure text hrule tabular row rows cell cells href code content_element
 
-/*Specifies the precedence of certain operators to resolve conflicts during parsing.*/
+/*Specifies the precedence of certain operators to resolve conflicts during parsing .*/
 
 %left PAR
 %left AMPERSAND DSLASH
@@ -64,13 +64,13 @@ title: TITLE STRING END_CURLY {
     $$ = astManager.newNode(TITLE_H);
     $$->data = *$2;
     delete $2;
-};
+}| {$$ = astManager.newNode(TITLE_H);};
 
 date: DATE STRING END_CURLY {
     $$ = astManager.newNode(DATE_H);
     $$->data = *$2;
     delete $2;
-};
+}| {$$ = astManager.newNode(DATE_H);};
 
 /*Defines the structure of the document, where content is added as a child node of the DOCUMENT_H node.*/
 begin_document: BEGIN_DOCUMENT content END_DOCUMENT {
@@ -125,17 +125,15 @@ ol: BEGIN_ENUMERATE items END_ENUMERATE {
 };
 
 // Items in lists
-items: items ITEM STRING {
+items: items ITEM text {
     $$ = $1;
     ASTNode* itemNode = astManager.newNode(ITEM_H);
-    itemNode->data = *$3;
+    itemNode->addChild($3); // Add the text as a child of the item node
     $$->addChild(itemNode);
-    delete $3;
 }
-    | ITEM STRING {
+    | ITEM text {
     $$ = astManager.newNode(ITEM_H);
-    $$->data = *$2;
-    delete $2;
+    $$->addChild($2); // Add the text as a child of the item node
 }
     | items list { // Handle nested lists
     $$ = $1;
@@ -294,11 +292,7 @@ cells: cells AMPERSAND cell {
     $$->addChild($1);
 };
 
-cell: STRING {
-    $$ = astManager.newNode(CELL_H);
-    $$->data = *$1;
-    delete $1;
-};
+cell: text {$$ = astManager.newNode(CELL_H); $$->addChild($1);};
 
 /*Handles hyperlinks, storing the link and label in the HREF_H node.*/
 
