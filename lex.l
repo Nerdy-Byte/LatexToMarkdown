@@ -29,7 +29,7 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 <*>[ \t]+ ; /* skip whitespace */
 
-<INITIAL>\n                         ; 
+<INITIAL>\n                           ; 
 
 <INITIAL>"\\documentclass{article}"   { cout << " DOCUMENT CLASS\n"; }
 
@@ -103,46 +103,32 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
     return TABLE_ARGS;
 }
 
-<INITIAL>"\\hrule"                    { return HRULE; }
+<INITIAL>"\\hrule"                      { return HRULE; }
 
-<TABLE_ARGUMENTS>"}"                  { BEGIN(ENV_TABULAR); prev_state[0] = 1; return END_CURLY; }
+<TABLE_ARGUMENTS>"}"                    { BEGIN(ENV_TABULAR); prev_state[0] = 1; return END_CURLY; }
 
-<ENV_TABULAR>"&"                      { return AMPERSAND; }
+<ENV_TABULAR>"&"                        { return AMPERSAND; }
 
-<INITIAL,ENV_TABULAR>\\\\             { return DSLASH; }
+<INITIAL,ENV_TABULAR>\\\\               { return DSLASH; }
 
-<ENV_TABULAR>"\\hline"                { return HLINE; }
+<ENV_TABULAR>"\\hline"                  { return HLINE; }
 
-"\\begin{verbatim}"                   { BEGIN(VERBATIUM_MODE); return START_VERBATIM; }
+"\\begin{verbatim}"                     { BEGIN(VERBATIUM_MODE); return START_VERBATIM; }
 
 <VERBATIUM_MODE>{
-    "\\end{verbatim}"                 { BEGIN(INITIAL); return END_VERBATIM; }
-    [^\n]+                            { yylval.svalue = new std::string(yytext); return CODE; }
-    \n                                { yylval.svalue = new std::string("\n"); return CODE; }
+    "\\end{verbatim}"                   { BEGIN(INITIAL); return END_VERBATIM; }
+    [^\n]+                              { yylval.svalue = new std::string(yytext); return CODE; }
+    \n                                  { yylval.svalue = new std::string("\n"); return CODE; }
 }
 
 
-<INITIAL>"\\end{document}"            { return END_DOCUMENT; }
+<INITIAL>"\\end{document}"              { return END_DOCUMENT; }
 
-"\\begin{figure}"                     { BEGIN(ENV_FIGURE); prev_state[0] = 0; return BEGIN_FIGURE; }
+"\\begin{figure}"                       { BEGIN(ENV_FIGURE); prev_state[0] = 0; return BEGIN_FIGURE; }
 
-<ENV_TABULAR>"\\begin{figure}"        { BEGIN(ENV_FIGURE); prev_state[0] = 1; return BEGIN_FIGURE; }
+<ENV_TABULAR>"\\begin{figure}"          { BEGIN(ENV_FIGURE); prev_state[0] = 1; return BEGIN_FIGURE; }
 
-<ENV_FIGURE>"}"        {
-    if (prev_state[0] == 0) {
-        BEGIN(INITIAL);
-        prev_state[0] = 2;
-    } else if (prev_state[0] == 1) {
-        BEGIN(ENV_TABULAR);
-        prev_state[0] = 2;
-    } else if (prev_state[0] == 2) {
-        BEGIN(ENV_FIGURE);
-        prev_state[0] = 2;
-    } else {
-        BEGIN(INITIAL);
-    }
-    return END_CURLY;
-}
+<ENV_FIGURE>"}"                         { BEGIN(INITIAL); return END_CURLY; }
 
 <INITIAL,ENV_FIGURE>"\\includegraphics" { return INCLUDE_GRAPHICS; }
 
@@ -154,21 +140,20 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 <FIGURE_ARGUMENTS>[a-zA-Z0-9=.,\s\-\\]+ {
     std::string fin(yytext);
-    
     yylval.svalue = new string(fin);
     return FIG_ARGS;
 }
 
-<FIGURE_ARGUMENTS>"]"                 { BEGIN(ENV_FIGURE); return END_SQUARE; }
+<FIGURE_ARGUMENTS>"]"                   { BEGIN(ENV_FIGURE); return END_SQUARE; }
 
 <INITIAL,DATE_CONTENT,TITLE_CONTENT,ENV_TABULAR,ENV_FIGURE,HREF_PATH,HREF_TAG>([a-zA-Z0-9 ]|{SPECIAL})* {
     yylval.svalue = new string(yytext);
     return STRING;
 }
 
-%.*\n                                  { ; }
+%.*\n                                    { ; }
 
-.                                      { ; }
+.                                        { ; }
 
 %%
 
