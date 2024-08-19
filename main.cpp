@@ -20,7 +20,7 @@ void yyerror(const char *s) {
 
 int main(int argc, char *argv[]) {
 	if (argc < 2) {
-		cout << "Error in entering arguments. Correct Format: /compiler <input.tex> <output.md>" << endl;
+		cout << "Error in entering arguments. Correct Format: ./compiler <input.tex> <output.md>" << endl;
 		return -1;
 	}
 
