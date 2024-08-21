@@ -1,17 +1,17 @@
-Terminals unused in grammar
+Terminals which are not used
 
-    FIGURE_PATH
-    FIGURE_SPECS
-    HEADING
-    MATH_STRING
-    ENDL
-    T_U
-    BEGIN_FIGURE
-    END_FIGURE
-    CAPTION
-    COMMA
-    LABEL_TAG
-    REF_TAG
+   FIGURE_PATH
+   FIGURE_SPECS
+   HEADING
+   MATH_STRING
+   ENDL
+   T_U
+   BEGIN_FIGURE
+   END_FIGURE
+   CAPTION
+   COMMA
+   LABEL_TAG
+   REF_TAG
 
 
 State 10 conflicts: 14 shift/reduce
@@ -29,16 +29,16 @@ Grammar
     1 start: title date begin_document
 
     2 title: TITLE STRING END_CURLY
-    3      | ε
+    3      | /* empty */
 
     4 date: DATE STRING END_CURLY
-    5     | ε
+    5     | /* empty */
 
     6 begin_document: BEGIN_DOCUMENT content END_DOCUMENT
 
     7 content: content_element
     8        | content content_element
-    9        | ε
+    9        | /* empty */
 
    10 content_element: verbatim
    11                | list
@@ -111,142 +111,117 @@ Grammar
 
 Terminals, with rules where they appear
 
-    $end (0) 0
-    error (256)
-    STRING <svalue> (258) 2 4 28 29 30 34 35 36 37 46 55
-    CODE <svalue> (259) 32 33
-    FIGURE_PATH <svalue> (260)
-    FIGURE_SPECS <svalue> (261)
-    HEADING <svalue> (262)
-    MATH_STRING <svalue> (263)
-    FIG_ARGS <svalue> (264) 36
-    TABLE_ARGS <svalue> (265) 47
-    TITLE (266) 2
-    DATE (267) 4
-    START_VERBATIM (268) 31
-    END_VERBATIM (269) 31
-    END_CURLY (270) 2 4 28 29 30 34 35 36 47 55
-    BEGIN_DOCUMENT (271) 6
-    END_DOCUMENT (272) 6
-    ITEM (273) 24 25
-    BEGIN_ITEMIZE (274) 22
-    END_ITEMIZE (275) 22
-    BEGIN_ENUMERATE (276) 23
-    END_ENUMERATE (277) 23
-    SECTION (278) 28
-    SUBSECTION (279) 29
-    SUBSUBSECTION (280) 30
-    ENDL (281)
-    T_BF (282) 34
-    T_IT (283) 35
-    T_U (284)
-    BEGIN_TABULAR (285) 47
-    END_TABULAR (286) 47
-    HLINE (287) 47 50
-    AMPERSAND (288) 52
-    DSLASH (289) 50 51
-    BEGIN_FIGURE (290)
-    BEGIN_SQUARE (291) 36
-    END_FIGURE (292)
-    END_SQUARE (293) 36
-    INCLUDE_GRAPHICS (294) 36
-    CAPTION (295)
-    COMMA (296)
-    BEGIN_CURLY (297) 28 29 30 34 35 36 47 55
-    PAR (298) 40 41 42 43
-    LABEL_TAG (299)
-    REF_TAG (300)
-    HRULE (301) 56
-    HREF (302) 55
+$end (0) 0
+error (256)
+STRING (258) 2 4 28 29 30 34 35 36 37 46 55
+CODE (259) 32 33
+FIGURE_PATH (260)
+FIGURE_SPECS (261)
+HEADING (262)
+MATH_STRING (263)
+FIG_ARGS (264) 36
+TABLE_ARGS (265) 47
+TITLE (266) 2
+DATE (267) 4
+START_VERBATIM (268) 31
+END_VERBATIM (269) 31
+END_CURLY (270) 2 4 28 29 30 34 35 36 47 55
+BEGIN_DOCUMENT (271) 6
+END_DOCUMENT (272) 6
+ITEM (273) 24 25
+BEGIN_ITEMIZE (274) 22
+END_ITEMIZE (275) 22
+BEGIN_ENUMERATE (276) 23
+END_ENUMERATE (277) 23
+SECTION (278) 28
+SUBSECTION (279) 29
+SUBSUBSECTION (280) 30
+ENDL (281)
+T_BF (282) 34
+T_IT (283) 35
+T_U (284)
+BEGIN_TABULAR (285) 47
+END_TABULAR (286) 47
+HLINE (287) 47 50
+AMPERSAND (288) 52
+DSLASH (289) 50 51
+BEGIN_FIGURE (290)
+BEGIN_SQUARE (291) 36
+END_FIGURE (292)
+END_SQUARE (293) 36
+INCLUDE_GRAPHICS (294) 36
+CAPTION (295)
+COMMA (296)
+BEGIN_CURLY (297) 28 29 30 34 35 36 47 55
+PAR (298) 40 41 42 43
+LABEL_TAG (299)
+REF_TAG (300)
+HRULE (301) 56
+HREF (302) 55
 
 
 Nonterminals, with rules where they appear
 
-    $accept (48)
-        on left: 0
-    start <node> (49)
-        on left: 1
-        on right: 0
-    title <node> (50)
-        on left: 2 3
-        on right: 1
-    date <node> (51)
-        on left: 4 5
-        on right: 1
-    begin_document <node> (52)
-        on left: 6
-        on right: 1
-    content <node> (53)
-        on left: 7 8 9
-        on right: 6 8
-    content_element <node> (54)
-        on left: 10 11 12 13 14 15 16 17 18 19
-        on right: 7 8
-    list <node> (55)
-        on left: 20 21
-        on right: 11 26 27
-    ul <node> (56)
-        on left: 22
-        on right: 20
-    ol <node> (57)
-        on left: 23
-        on right: 21
-    items <node> (58)
-        on left: 24 25 26 27
-        on right: 22 23 24 26
-    section <node> (59)
-        on left: 28
-        on right: 12
-    subsection <node> (60)
-        on left: 29
-        on right: 13
-    subsubsection <node> (61)
-        on left: 30
-        on right: 14
-    verbatim <node> (62)
-        on left: 31
-        on right: 10
-    code <node> (63)
-        on left: 32 33
-        on right: 31 32
-    bold <node> (64)
-        on left: 34
-        on right: 38 44
-    italic <node> (65)
-        on left: 35
-        on right: 39 45
-    figure <node> (66)
-        on left: 36
-        on right: 16
-    text <node> (67)
-        on left: 37 38 39 40 41 42 43 44 45 46
-        on right: 15 24 25 37 38 39 40 41 42 54
-    tabular <node> (68)
-        on left: 47
-        on right: 18
-    rows <node> (69)
-        on left: 48 49
-        on right: 47 48
-    row <node> (70)
-        on left: 50 51
-        on right: 48 49
-    cells <node> (71)
-        on left: 52 53
-        on right: 50 51 52
-    cell <node> (72)
-        on left: 54
-        on right: 52 53
-    href <node> (73)
-        on left: 55
-        on right: 19
-    hrule <node> (74)
-        on left: 56
-        on right: 17
+$accept (48)
+    on left: 0
+start (49)
+    on left: 1, on right: 0
+title (50)
+    on left: 2 3, on right: 1
+date (51)
+    on left: 4 5, on right: 1
+begin_document (52)
+    on left: 6, on right: 1
+content (53)
+    on left: 7 8 9, on right: 6 8
+content_element (54)
+    on left: 10 11 12 13 14 15 16 17 18 19, on right: 7 8
+list (55)
+    on left: 20 21, on right: 11 26 27
+ul (56)
+    on left: 22, on right: 20
+ol (57)
+    on left: 23, on right: 21
+items (58)
+    on left: 24 25 26 27, on right: 22 23 24 26
+section (59)
+    on left: 28, on right: 12
+subsection (60)
+    on left: 29, on right: 13
+subsubsection (61)
+    on left: 30, on right: 14
+verbatim (62)
+    on left: 31, on right: 10
+code (63)
+    on left: 32 33, on right: 31 32
+bold (64)
+    on left: 34, on right: 38 44
+italic (65)
+    on left: 35, on right: 39 45
+figure (66)
+    on left: 36, on right: 16
+text (67)
+    on left: 37 38 39 40 41 42 43 44 45 46, on right: 15 24 25 37 38
+    39 40 41 42 54
+tabular (68)
+    on left: 47, on right: 18
+rows (69)
+    on left: 48 49, on right: 47 48
+row (70)
+    on left: 50 51, on right: 48 49
+cells (71)
+    on left: 52 53, on right: 50 51 52
+cell (72)
+    on left: 54, on right: 52 53
+href (73)
+    on left: 55, on right: 19
+hrule (74)
+    on left: 56, on right: 17
 
 
-State 0
+state 0
 
-    0 $accept: • start $end
+    0 $accept: . start $end
 
     TITLE  shift, and go to state 1
 
@@ -256,23 +231,23 @@ State 0
     title  go to state 3
 
 
-State 1
+state 1
 
-    2 title: TITLE • STRING END_CURLY
+    2 title: TITLE . STRING END_CURLY
 
     STRING  shift, and go to state 4
 
 
-State 2
+state 2
 
-    0 $accept: start • $end
+    0 $accept: start . $end
 
     $end  shift, and go to state 5
 
 
-State 3
+state 3
 
-    1 start: title • date begin_document
+    1 start: title . date begin_document
 
     DATE  shift, and go to state 6
 
@@ -281,53 +256,53 @@ State 3
     date  go to state 7
 
 
-State 4
+state 4
 
-    2 title: TITLE STRING • END_CURLY
+    2 title: TITLE STRING . END_CURLY
 
     END_CURLY  shift, and go to state 8
 
 
-State 5
+state 5
 
-    0 $accept: start $end •
+    0 $accept: start $end .
 
     $default  accept
 
 
-State 6
+state 6
 
-    4 date: DATE • STRING END_CURLY
+    4 date: DATE . STRING END_CURLY
 
     STRING  shift, and go to state 9
 
 
-State 7
+state 7
 
-    1 start: title date • begin_document
+    1 start: title date . begin_document
 
     BEGIN_DOCUMENT  shift, and go to state 10
 
     begin_document  go to state 11
 
 
-State 8
+state 8
 
-    2 title: TITLE STRING END_CURLY •
+    2 title: TITLE STRING END_CURLY .
 
     $default  reduce using rule 2 (title)
 
 
-State 9
+state 9
 
-    4 date: DATE STRING • END_CURLY
+    4 date: DATE STRING . END_CURLY
 
     END_CURLY  shift, and go to state 12
 
 
-State 10
+state 10
 
-    6 begin_document: BEGIN_DOCUMENT • content END_DOCUMENT
+    6 begin_document: BEGIN_DOCUMENT . content END_DOCUMENT
 
     STRING            shift, and go to state 13
     START_VERBATIM    shift, and go to state 14
@@ -378,39 +353,39 @@ State 10
     hrule            go to state 42
 
 
-State 11
+state 11
 
-    1 start: title date begin_document •
+    1 start: title date begin_document .
 
     $default  reduce using rule 1 (start)
 
 
-State 12
+state 12
 
-    4 date: DATE STRING END_CURLY •
+    4 date: DATE STRING END_CURLY .
 
     $default  reduce using rule 4 (date)
 
 
-State 13
+state 13
 
-   46 text: STRING •
+   46 text: STRING .
 
     $default  reduce using rule 46 (text)
 
 
-State 14
+state 14
 
-   31 verbatim: START_VERBATIM • code END_VERBATIM
+   31 verbatim: START_VERBATIM . code END_VERBATIM
 
     CODE  shift, and go to state 43
 
     code  go to state 44
 
 
-State 15
+state 15
 
-   22 ul: BEGIN_ITEMIZE • items END_ITEMIZE
+   22 ul: BEGIN_ITEMIZE . items END_ITEMIZE
 
     ITEM             shift, and go to state 45
     BEGIN_ITEMIZE    shift, and go to state 15
@@ -422,9 +397,9 @@ State 15
     items  go to state 47
 
 
-State 16
+state 16
 
-   23 ol: BEGIN_ENUMERATE • items END_ENUMERATE
+   23 ol: BEGIN_ENUMERATE . items END_ENUMERATE
 
     ITEM             shift, and go to state 45
     BEGIN_ITEMIZE    shift, and go to state 15
@@ -436,59 +411,59 @@ State 16
     items  go to state 48
 
 
-State 17
+state 17
 
-   28 section: SECTION • BEGIN_CURLY STRING END_CURLY
+   28 section: SECTION . BEGIN_CURLY STRING END_CURLY
 
     BEGIN_CURLY  shift, and go to state 49
 
 
-State 18
+state 18
 
-   29 subsection: SUBSECTION • BEGIN_CURLY STRING END_CURLY
+   29 subsection: SUBSECTION . BEGIN_CURLY STRING END_CURLY
 
     BEGIN_CURLY  shift, and go to state 50
 
 
-State 19
+state 19
 
-   30 subsubsection: SUBSUBSECTION • BEGIN_CURLY STRING END_CURLY
+   30 subsubsection: SUBSUBSECTION . BEGIN_CURLY STRING END_CURLY
 
     BEGIN_CURLY  shift, and go to state 51
 
 
-State 20
+state 20
 
-   34 bold: T_BF • BEGIN_CURLY STRING END_CURLY
+   34 bold: T_BF . BEGIN_CURLY STRING END_CURLY
 
     BEGIN_CURLY  shift, and go to state 52
 
 
-State 21
+state 21
 
-   35 italic: T_IT • BEGIN_CURLY STRING END_CURLY
+   35 italic: T_IT . BEGIN_CURLY STRING END_CURLY
 
     BEGIN_CURLY  shift, and go to state 53
 
 
-State 22
+state 22
 
-   47 tabular: BEGIN_TABULAR • BEGIN_CURLY TABLE_ARGS END_CURLY HLINE rows END_TABULAR
+   47 tabular: BEGIN_TABULAR . BEGIN_CURLY TABLE_ARGS END_CURLY HLINE rows END_TABULAR
 
     BEGIN_CURLY  shift, and go to state 54
 
 
-State 23
+state 23
 
-   36 figure: INCLUDE_GRAPHICS • BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY STRING END_CURLY
+   36 figure: INCLUDE_GRAPHICS . BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY STRING END_CURLY
 
     BEGIN_SQUARE  shift, and go to state 55
 
 
-State 24
+state 24
 
-   42 text: PAR • text
-   43     | PAR •
+   42 text: PAR . text
+   43     | PAR .
 
     STRING  shift, and go to state 13
     T_BF    shift, and go to state 20
@@ -504,24 +479,24 @@ State 24
     text    go to state 56
 
 
-State 25
+state 25
 
-   56 hrule: HRULE •
+   56 hrule: HRULE .
 
     $default  reduce using rule 56 (hrule)
 
 
-State 26
+state 26
 
-   55 href: HREF • BEGIN_CURLY STRING END_CURLY BEGIN_CURLY STRING END_CURLY
+   55 href: HREF . BEGIN_CURLY STRING END_CURLY BEGIN_CURLY STRING END_CURLY
 
     BEGIN_CURLY  shift, and go to state 57
 
 
-State 27
+state 27
 
-    6 begin_document: BEGIN_DOCUMENT content • END_DOCUMENT
-    8 content: content • content_element
+    6 begin_document: BEGIN_DOCUMENT content . END_DOCUMENT
+    8 content: content . content_element
 
     STRING            shift, and go to state 13
     START_VERBATIM    shift, and go to state 14
@@ -556,91 +531,91 @@ State 27
     hrule            go to state 42
 
 
-State 28
+state 28
 
-    7 content: content_element •
+    7 content: content_element .
 
     $default  reduce using rule 7 (content)
 
 
-State 29
+state 29
 
-   11 content_element: list •
+   11 content_element: list .
 
     $default  reduce using rule 11 (content_element)
 
 
-State 30
+state 30
 
-   20 list: ul •
+   20 list: ul .
 
     $default  reduce using rule 20 (list)
 
 
-State 31
+state 31
 
-   21 list: ol •
+   21 list: ol .
 
     $default  reduce using rule 21 (list)
 
 
-State 32
+state 32
 
-   12 content_element: section •
+   12 content_element: section .
 
     $default  reduce using rule 12 (content_element)
 
 
-State 33
+state 33
 
-   13 content_element: subsection •
+   13 content_element: subsection .
 
     $default  reduce using rule 13 (content_element)
 
 
-State 34
+state 34
 
-   14 content_element: subsubsection •
+   14 content_element: subsubsection .
 
     $default  reduce using rule 14 (content_element)
 
 
-State 35
+state 35
 
-   10 content_element: verbatim •
+   10 content_element: verbatim .
 
     $default  reduce using rule 10 (content_element)
 
 
-State 36
+state 36
 
-   44 text: bold •
+   44 text: bold .
 
     $default  reduce using rule 44 (text)
 
 
-State 37
+state 37
 
-   45 text: italic •
+   45 text: italic .
 
     $default  reduce using rule 45 (text)
 
 
-State 38
+state 38
 
-   16 content_element: figure •
+   16 content_element: figure .
 
     $default  reduce using rule 16 (content_element)
 
 
-State 39
+state 39
 
-   15 content_element: text •
-   37 text: text • STRING
-   38     | text • bold
-   39     | text • italic
-   40     | text • PAR text
-   41     | text • PAR
+   15 content_element: text .
+   37 text: text . STRING
+   38     | text . bold
+   39     | text . italic
+   40     | text . PAR text
+   41     | text . PAR
 
     STRING  shift, and go to state 60
     T_BF    shift, and go to state 20
@@ -657,46 +632,46 @@ State 39
     italic  go to state 63
 
 
-State 40
+state 40
 
-   18 content_element: tabular •
+   18 content_element: tabular .
 
     $default  reduce using rule 18 (content_element)
 
 
-State 41
+state 41
 
-   19 content_element: href •
+   19 content_element: href .
 
     $default  reduce using rule 19 (content_element)
 
 
-State 42
+state 42
 
-   17 content_element: hrule •
+   17 content_element: hrule .
 
     $default  reduce using rule 17 (content_element)
 
 
-State 43
+state 43
 
-   33 code: CODE •
+   33 code: CODE .
 
     $default  reduce using rule 33 (code)
 
 
-State 44
+state 44
 
-   31 verbatim: START_VERBATIM code • END_VERBATIM
-   32 code: code • CODE
+   31 verbatim: START_VERBATIM code . END_VERBATIM
+   32 code: code . CODE
 
     CODE          shift, and go to state 64
     END_VERBATIM  shift, and go to state 65
 
 
-State 45
+state 45
 
-   25 items: ITEM • text
+   25 items: ITEM . text
 
     STRING  shift, and go to state 13
     T_BF    shift, and go to state 20
@@ -708,18 +683,18 @@ State 45
     text    go to state 66
 
 
-State 46
+state 46
 
-   27 items: list •
+   27 items: list .
 
     $default  reduce using rule 27 (items)
 
 
-State 47
+state 47
 
-   22 ul: BEGIN_ITEMIZE items • END_ITEMIZE
-   24 items: items • ITEM text
-   26      | items • list
+   22 ul: BEGIN_ITEMIZE items . END_ITEMIZE
+   24 items: items . ITEM text
+   26      | items . list
 
     ITEM             shift, and go to state 67
     BEGIN_ITEMIZE    shift, and go to state 15
@@ -731,11 +706,11 @@ State 47
     ol    go to state 31
 
 
-State 48
+state 48
 
-   23 ol: BEGIN_ENUMERATE items • END_ENUMERATE
-   24 items: items • ITEM text
-   26      | items • list
+   23 ol: BEGIN_ENUMERATE items . END_ENUMERATE
+   24 items: items . ITEM text
+   26      | items . list
 
     ITEM             shift, and go to state 67
     BEGIN_ITEMIZE    shift, and go to state 15
@@ -747,63 +722,63 @@ State 48
     ol    go to state 31
 
 
-State 49
+state 49
 
-   28 section: SECTION BEGIN_CURLY • STRING END_CURLY
+   28 section: SECTION BEGIN_CURLY . STRING END_CURLY
 
     STRING  shift, and go to state 71
 
 
-State 50
+state 50
 
-   29 subsection: SUBSECTION BEGIN_CURLY • STRING END_CURLY
+   29 subsection: SUBSECTION BEGIN_CURLY . STRING END_CURLY
 
     STRING  shift, and go to state 72
 
 
-State 51
+state 51
 
-   30 subsubsection: SUBSUBSECTION BEGIN_CURLY • STRING END_CURLY
+   30 subsubsection: SUBSUBSECTION BEGIN_CURLY . STRING END_CURLY
 
     STRING  shift, and go to state 73
 
 
-State 52
+state 52
 
-   34 bold: T_BF BEGIN_CURLY • STRING END_CURLY
+   34 bold: T_BF BEGIN_CURLY . STRING END_CURLY
 
     STRING  shift, and go to state 74
 
 
-State 53
+state 53
 
-   35 italic: T_IT BEGIN_CURLY • STRING END_CURLY
+   35 italic: T_IT BEGIN_CURLY . STRING END_CURLY
 
     STRING  shift, and go to state 75
 
 
-State 54
+state 54
 
-   47 tabular: BEGIN_TABULAR BEGIN_CURLY • TABLE_ARGS END_CURLY HLINE rows END_TABULAR
+   47 tabular: BEGIN_TABULAR BEGIN_CURLY . TABLE_ARGS END_CURLY HLINE rows END_TABULAR
 
     TABLE_ARGS  shift, and go to state 76
 
 
-State 55
+state 55
 
-   36 figure: INCLUDE_GRAPHICS BEGIN_SQUARE • FIG_ARGS END_SQUARE BEGIN_CURLY STRING END_CURLY
+   36 figure: INCLUDE_GRAPHICS BEGIN_SQUARE . FIG_ARGS END_SQUARE BEGIN_CURLY STRING END_CURLY
 
     FIG_ARGS  shift, and go to state 77
 
 
-State 56
+state 56
 
-   37 text: text • STRING
-   38     | text • bold
-   39     | text • italic
-   40     | text • PAR text
-   41     | text • PAR
-   42     | PAR text •
+   37 text: text . STRING
+   38     | text . bold
+   39     | text . italic
+   40     | text . PAR text
+   41     | text . PAR
+   42     | PAR text .
 
     STRING  shift, and go to state 60
     T_BF    shift, and go to state 20
@@ -818,38 +793,38 @@ State 56
     italic  go to state 63
 
 
-State 57
+state 57
 
-   55 href: HREF BEGIN_CURLY • STRING END_CURLY BEGIN_CURLY STRING END_CURLY
+   55 href: HREF BEGIN_CURLY . STRING END_CURLY BEGIN_CURLY STRING END_CURLY
 
     STRING  shift, and go to state 78
 
 
-State 58
+state 58
 
-    6 begin_document: BEGIN_DOCUMENT content END_DOCUMENT •
+    6 begin_document: BEGIN_DOCUMENT content END_DOCUMENT .
 
     $default  reduce using rule 6 (begin_document)
 
 
-State 59
+state 59
 
-    8 content: content content_element •
+    8 content: content content_element .
 
     $default  reduce using rule 8 (content)
 
 
-State 60
+state 60
 
-   37 text: text STRING •
+   37 text: text STRING .
 
     $default  reduce using rule 37 (text)
 
 
-State 61
+state 61
 
-   40 text: text PAR • text
-   41     | text PAR •
+   40 text: text PAR . text
+   41     | text PAR .
 
     STRING  shift, and go to state 13
     T_BF    shift, and go to state 20
@@ -865,42 +840,42 @@ State 61
     text    go to state 79
 
 
-State 62
+state 62
 
-   38 text: text bold •
+   38 text: text bold .
 
     $default  reduce using rule 38 (text)
 
 
-State 63
+state 63
 
-   39 text: text italic •
+   39 text: text italic .
 
     $default  reduce using rule 39 (text)
 
 
-State 64
+state 64
 
-   32 code: code CODE •
+   32 code: code CODE .
 
     $default  reduce using rule 32 (code)
 
 
-State 65
+state 65
 
-   31 verbatim: START_VERBATIM code END_VERBATIM •
+   31 verbatim: START_VERBATIM code END_VERBATIM .
 
     $default  reduce using rule 31 (verbatim)
 
 
-State 66
+state 66
 
-   25 items: ITEM text •
-   37 text: text • STRING
-   38     | text • bold
-   39     | text • italic
-   40     | text • PAR text
-   41     | text • PAR
+   25 items: ITEM text .
+   37 text: text . STRING
+   38     | text . bold
+   39     | text . italic
+   40     | text . PAR text
+   41     | text . PAR
 
     STRING  shift, and go to state 60
     T_BF    shift, and go to state 20
@@ -913,9 +888,9 @@ State 66
     italic  go to state 63
 
 
-State 67
+state 67
 
-   24 items: items ITEM • text
+   24 items: items ITEM . text
 
     STRING  shift, and go to state 13
     T_BF    shift, and go to state 20
@@ -927,91 +902,91 @@ State 67
     text    go to state 80
 
 
-State 68
+state 68
 
-   22 ul: BEGIN_ITEMIZE items END_ITEMIZE •
+   22 ul: BEGIN_ITEMIZE items END_ITEMIZE .
 
     $default  reduce using rule 22 (ul)
 
 
-State 69
+state 69
 
-   26 items: items list •
+   26 items: items list .
 
     $default  reduce using rule 26 (items)
 
 
-State 70
+state 70
 
-   23 ol: BEGIN_ENUMERATE items END_ENUMERATE •
+   23 ol: BEGIN_ENUMERATE items END_ENUMERATE .
 
     $default  reduce using rule 23 (ol)
 
 
-State 71
+state 71
 
-   28 section: SECTION BEGIN_CURLY STRING • END_CURLY
+   28 section: SECTION BEGIN_CURLY STRING . END_CURLY
 
     END_CURLY  shift, and go to state 81
 
 
-State 72
+state 72
 
-   29 subsection: SUBSECTION BEGIN_CURLY STRING • END_CURLY
+   29 subsection: SUBSECTION BEGIN_CURLY STRING . END_CURLY
 
     END_CURLY  shift, and go to state 82
 
 
-State 73
+state 73
 
-   30 subsubsection: SUBSUBSECTION BEGIN_CURLY STRING • END_CURLY
+   30 subsubsection: SUBSUBSECTION BEGIN_CURLY STRING . END_CURLY
 
     END_CURLY  shift, and go to state 83
 
 
-State 74
+state 74
 
-   34 bold: T_BF BEGIN_CURLY STRING • END_CURLY
+   34 bold: T_BF BEGIN_CURLY STRING . END_CURLY
 
     END_CURLY  shift, and go to state 84
 
 
-State 75
+state 75
 
-   35 italic: T_IT BEGIN_CURLY STRING • END_CURLY
+   35 italic: T_IT BEGIN_CURLY STRING . END_CURLY
 
     END_CURLY  shift, and go to state 85
 
 
-State 76
+state 76
 
-   47 tabular: BEGIN_TABULAR BEGIN_CURLY TABLE_ARGS • END_CURLY HLINE rows END_TABULAR
+   47 tabular: BEGIN_TABULAR BEGIN_CURLY TABLE_ARGS . END_CURLY HLINE rows END_TABULAR
 
     END_CURLY  shift, and go to state 86
 
 
-State 77
+state 77
 
-   36 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS • END_SQUARE BEGIN_CURLY STRING END_CURLY
+   36 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS . END_SQUARE BEGIN_CURLY STRING END_CURLY
 
     END_SQUARE  shift, and go to state 87
 
 
-State 78
+state 78
 
-   55 href: HREF BEGIN_CURLY STRING • END_CURLY BEGIN_CURLY STRING END_CURLY
+   55 href: HREF BEGIN_CURLY STRING . END_CURLY BEGIN_CURLY STRING END_CURLY
 
     END_CURLY  shift, and go to state 88
 
 
-State 79
+state 79
 
-   37 text: text • STRING
-   38     | text • bold
-   39     | text • italic
-   40     | text • PAR text
-   40     | text PAR text •
-   41     | text • PAR
+   37 text: text . STRING
+   38     | text . bold
+   39     | text . italic
+   40     | text . PAR text
+   40     | text PAR text .
+   41     | text . PAR
 
     STRING  shift, and go to state 60
     T_BF    shift, and go to state 20
@@ -1026,14 +1001,14 @@ State 79
     italic  go to state 63
 
 
-State 80
+state 80
 
-   24 items: items ITEM text •
-   37 text: text • STRING
-   38     | text • bold
-   39     | text • italic
-   40     | text • PAR text
-   41     | text • PAR
+   24 items: items ITEM text .
+   37 text: text . STRING
+   38     | text . bold
+   39     | text . italic
+   40     | text . PAR text
+   41     | text . PAR
 
     STRING  shift, and go to state 60
     T_BF    shift, and go to state 20
@@ -1046,65 +1021,65 @@ State 80
     italic  go to state 63
 
 
-State 81
+state 81
 
-   28 section: SECTION BEGIN_CURLY STRING END_CURLY •
+   28 section: SECTION BEGIN_CURLY STRING END_CURLY .
 
     $default  reduce using rule 28 (section)
 
 
-State 82
+state 82
 
-   29 subsection: SUBSECTION BEGIN_CURLY STRING END_CURLY •
+   29 subsection: SUBSECTION BEGIN_CURLY STRING END_CURLY .
 
     $default  reduce using rule 29 (subsection)
 
 
-State 83
+state 83
 
-   30 subsubsection: SUBSUBSECTION BEGIN_CURLY STRING END_CURLY •
+   30 subsubsection: SUBSUBSECTION BEGIN_CURLY STRING END_CURLY .
 
     $default  reduce using rule 30 (subsubsection)
 
 
-State 84
+state 84
 
-   34 bold: T_BF BEGIN_CURLY STRING END_CURLY •
+   34 bold: T_BF BEGIN_CURLY STRING END_CURLY .
 
     $default  reduce using rule 34 (bold)
 
 
-State 85
+state 85
 
-   35 italic: T_IT BEGIN_CURLY STRING END_CURLY •
+   35 italic: T_IT BEGIN_CURLY STRING END_CURLY .
 
     $default  reduce using rule 35 (italic)
 
 
-State 86
+state 86
 
-   47 tabular: BEGIN_TABULAR BEGIN_CURLY TABLE_ARGS END_CURLY • HLINE rows END_TABULAR
+   47 tabular: BEGIN_TABULAR BEGIN_CURLY TABLE_ARGS END_CURLY . HLINE rows END_TABULAR
 
     HLINE  shift, and go to state 89
 
 
-State 87
+state 87
 
-   36 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE • BEGIN_CURLY STRING END_CURLY
+   36 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE . BEGIN_CURLY STRING END_CURLY
 
     BEGIN_CURLY  shift, and go to state 90
 
 
-State 88
+state 88
 
-   55 href: HREF BEGIN_CURLY STRING END_CURLY • BEGIN_CURLY STRING END_CURLY
+   55 href: HREF BEGIN_CURLY STRING END_CURLY . BEGIN_CURLY STRING END_CURLY
 
     BEGIN_CURLY  shift, and go to state 91
 
 
-State 89
+state 89
 
-   47 tabular: BEGIN_TABULAR BEGIN_CURLY TABLE_ARGS END_CURLY HLINE • rows END_TABULAR
+   47 tabular: BEGIN_TABULAR BEGIN_CURLY TABLE_ARGS END_CURLY HLINE . rows END_TABULAR
 
     STRING  shift, and go to state 13
     T_BF    shift, and go to state 20
@@ -1120,28 +1095,28 @@ State 89
     cell    go to state 96
 
 
-State 90
+state 90
 
-   36 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY • STRING END_CURLY
+   36 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY . STRING END_CURLY
 
     STRING  shift, and go to state 97
 
 
-State 91
+state 91
 
-   55 href: HREF BEGIN_CURLY STRING END_CURLY BEGIN_CURLY • STRING END_CURLY
+   55 href: HREF BEGIN_CURLY STRING END_CURLY BEGIN_CURLY . STRING END_CURLY
 
     STRING  shift, and go to state 98
 
 
-State 92
+state 92
 
-   37 text: text • STRING
-   38     | text • bold
-   39     | text • italic
-   40     | text • PAR text
-   41     | text • PAR
-   54 cell: text •
+   37 text: text . STRING
+   38     | text . bold
+   39     | text . italic
+   40     | text . PAR text
+   41     | text . PAR
+   54 cell: text .
 
     STRING  shift, and go to state 60
     T_BF    shift, and go to state 20
@@ -1154,10 +1129,10 @@ State 92
     italic  go to state 63
 
 
-State 93
+state 93
 
-   47 tabular: BEGIN_TABULAR BEGIN_CURLY TABLE_ARGS END_CURLY HLINE rows • END_TABULAR
-   48 rows: rows • row
+   47 tabular: BEGIN_TABULAR BEGIN_CURLY TABLE_ARGS END_CURLY HLINE rows . END_TABULAR
+   48 rows: rows . row
 
     STRING       shift, and go to state 13
     T_BF         shift, and go to state 20
@@ -1173,61 +1148,61 @@ State 93
     cell    go to state 96
 
 
-State 94
+state 94
 
-   49 rows: row •
+   49 rows: row .
 
     $default  reduce using rule 49 (rows)
 
 
-State 95
+state 95
 
-   50 row: cells • DSLASH HLINE
-   51    | cells • DSLASH
-   52 cells: cells • AMPERSAND cell
+   50 row: cells . DSLASH HLINE
+   51    | cells . DSLASH
+   52 cells: cells . AMPERSAND cell
 
     AMPERSAND  shift, and go to state 101
     DSLASH     shift, and go to state 102
 
 
-State 96
+state 96
 
-   53 cells: cell •
+   53 cells: cell .
 
     $default  reduce using rule 53 (cells)
 
 
-State 97
+state 97
 
-   36 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY STRING • END_CURLY
+   36 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY STRING . END_CURLY
 
     END_CURLY  shift, and go to state 103
 
 
-State 98
+state 98
 
-   55 href: HREF BEGIN_CURLY STRING END_CURLY BEGIN_CURLY STRING • END_CURLY
+   55 href: HREF BEGIN_CURLY STRING END_CURLY BEGIN_CURLY STRING . END_CURLY
 
     END_CURLY  shift, and go to state 104
 
 
-State 99
+state 99
 
-   47 tabular: BEGIN_TABULAR BEGIN_CURLY TABLE_ARGS END_CURLY HLINE rows END_TABULAR •
+   47 tabular: BEGIN_TABULAR BEGIN_CURLY TABLE_ARGS END_CURLY HLINE rows END_TABULAR .
 
     $default  reduce using rule 47 (tabular)
 
 
-State 100
+state 100
 
-   48 rows: rows row •
+   48 rows: rows row .
 
     $default  reduce using rule 48 (rows)
 
 
-State 101
+state 101
 
-   52 cells: cells AMPERSAND • cell
+   52 cells: cells AMPERSAND . cell
 
     STRING  shift, and go to state 13
     T_BF    shift, and go to state 20
@@ -1240,39 +1215,39 @@ State 101
     cell    go to state 105
 
 
-State 102
+state 102
 
-   50 row: cells DSLASH • HLINE
-   51    | cells DSLASH •
+   50 row: cells DSLASH . HLINE
+   51    | cells DSLASH .
 
     HLINE  shift, and go to state 106
 
     $default  reduce using rule 51 (row)
 
 
-State 103
+state 103
 
-   36 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY STRING END_CURLY •
+   36 figure: INCLUDE_GRAPHICS BEGIN_SQUARE FIG_ARGS END_SQUARE BEGIN_CURLY STRING END_CURLY .
 
     $default  reduce using rule 36 (figure)
 
 
-State 104
+state 104
 
-   55 href: HREF BEGIN_CURLY STRING END_CURLY BEGIN_CURLY STRING END_CURLY •
+   55 href: HREF BEGIN_CURLY STRING END_CURLY BEGIN_CURLY STRING END_CURLY .
 
     $default  reduce using rule 55 (href)
 
 
-State 105
+state 105
 
-   52 cells: cells AMPERSAND cell •
+   52 cells: cells AMPERSAND cell .
 
     $default  reduce using rule 52 (cells)
 
 
-State 106
+state 106
 
-   50 row: cells DSLASH HLINE •
+   50 row: cells DSLASH HLINE .
 
     $default  reduce using rule 50 (row)

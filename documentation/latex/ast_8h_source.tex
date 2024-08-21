@@ -1,0 +1,118 @@
+\doxysection{ast.\+h}
+\hypertarget{ast_8h_source}{}\label{ast_8h_source}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ \_AST\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ \_AST\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <stack>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{using\ namespace\ }std;}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{enum}\ NodeType\ \{}
+\DoxyCodeLine{00015\ \ \ \ \ AST\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00016\ \ \ \ \ DOCUMENT\_H,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00017\ \ \ \ \ SECTION\_H,\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00018\ \ \ \ \ SUBSECTION\_H,\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00019\ \ \ \ \ SUBSUBSECTION\_H,\ \ \ \ \ \ }
+\DoxyCodeLine{00020\ \ \ \ \ TEXTBF\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00021\ \ \ \ \ TEXTIT\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00022\ \ \ \ \ UNDERLINE\_H,\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00023\ \ \ \ \ STRING\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00024\ \ \ \ \ ENUMERATE\_H,\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00025\ \ \ \ \ ITEMIZE\_H,\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00026\ \ \ \ \ ITEM\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00027\ \ \ \ \ PAR\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00028\ \ \ \ \ TABULAR\_H,\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00029\ \ \ \ \ ROW\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00030\ \ \ \ \ CELL\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00031\ \ \ \ \ FIGURE\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00032\ \ \ \ \ CAPTION\_H,\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00033\ \ \ \ \ INCLUDE\_GRAPHICS\_H,\ \ \ }
+\DoxyCodeLine{00034\ \ \ \ \ LABEL\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00035\ \ \ \ \ REF\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00036\ \ \ \ \ HLINE\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00037\ \ \ \ \ SQRT\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00038\ \ \ \ \ TITLE\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00039\ \ \ \ \ DATE\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00040\ \ \ \ \ VERBATIM\_H,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00041\ \ \ \ \ HRULE\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00042\ \ \ \ \ HREF\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00043\ \ \ \ \ TEXT\_H,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00044\ \ \ \ \ CODE\_H\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00045\ \};}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00048\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{string}\ nodeTypeToString(NodeType\ type)\ \{}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordflow}{switch}\ (type)\ \{}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ AST\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}AST\_H"{}};}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ SECTION\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}SECTION\_H"{}};}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ SUBSECTION\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}SUBSECTION\_H"{}};}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ ITEMIZE\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}ITEMIZE\_H"{}};}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ ENUMERATE\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}ENUMERATE\_H"{}};}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ ITEM\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}ITEM\_H"{}};}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ TEXTBF\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}TEXTBF\_H"{}};}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ TEXTIT\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}TEXTIT\_H"{}};}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ UNDERLINE\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}UNDERLINE\_H"{}};}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ PAR\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}PAR\_H"{}};}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ LABEL\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}LABEL\_H"{}};}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ REF\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}REF\_H"{}};}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ TABULAR\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}TABULAR\_H"{}};}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ FIGURE\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}FIGURE\_H"{}};}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ INCLUDE\_GRAPHICS\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}INCLUDE\_GRAPHICS\_H"{}};}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ CAPTION\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}CAPTION\_H"{}};}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ STRING\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}STRING\_H"{}};}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ DOCUMENT\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}DOCUMENT\_H"{}};}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ ROW\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}ROW\_H"{}};}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ CELL\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}CELL\_H"{}};}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ SQRT\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}SQRT\_H"{}};}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ HLINE\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}HLINE\_H"{}};}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ SUBSUBSECTION\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}SUBSUBSECTION\_H"{}};}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ TITLE\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}TITLE\_H"{}};}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ DATE\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}DATE\_H"{}};}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ VERBATIM\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}VERBATIM\_H"{}};}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ HRULE\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}HRULE\_H"{}};}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ HREF\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}HREF\_H"{}};}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ TEXT\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}TEXT\_H"{}};}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ CODE\_H:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}CODE\_H"{}};}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:\ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}UNKNOWN\_NODE\_TYPE"{}};}
+\DoxyCodeLine{00081\ \ \ \ \ \}}
+\DoxyCodeLine{00082\ \}}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00085\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_a_s_t_node}{ASTNode}}\ \{}
+\DoxyCodeLine{00086\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00087\ \ \ \ \ NodeType\ node\_type;\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{class_a_s_t_node_a9eaee80405f3e2fbc1989301db2a97c8}{data}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keywordtype}{string}\ \mbox{\hyperlink{class_a_s_t_node_a195c622e5db837d10fd69489cae14049}{attributes}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00090\ \ \ \ \ vector<ASTNode\ *>\ \mbox{\hyperlink{class_a_s_t_node_a90b460fd6bdd8c88c76e676c9f9d7f0c}{children}};\ \ \ \ \ }
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00093\ \ \ \ \ \mbox{\hyperlink{class_a_s_t_node_a1196ed4f19c0b62cdc42fe35946b91d2}{ASTNode}}();\ \ }
+\DoxyCodeLine{00094\ \ \ \ \ \mbox{\hyperlink{class_a_s_t_node_a1196ed4f19c0b62cdc42fe35946b91d2}{ASTNode}}(NodeType\ type,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ \&\mbox{\hyperlink{class_a_s_t_node_a9eaee80405f3e2fbc1989301db2a97c8}{data}}\ =\ \textcolor{stringliteral}{"{}"{}},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ \&\mbox{\hyperlink{class_a_s_t_node_a195c622e5db837d10fd69489cae14049}{attributes}}\ =\ \textcolor{stringliteral}{"{}"{}});\ \ }
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00097\ \ \ \ \ \mbox{\hyperlink{class_a_s_t_node_a41a691f37fa038eb183280effeb8ba4e}{\string~ASTNode}}();\ \ }
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_a_s_t_node_a7ddb9f962dce99eb36de281ece21e41d}{addChild}}(\mbox{\hyperlink{class_a_s_t_node}{ASTNode}}\ *child);}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_a_s_t_node_ad326629b71c4aac5c2355bfeac44e670}{print}}(\textcolor{keywordtype}{int}\ tabs\ =\ 0)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00104\ \};}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00107\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_a_s_t_manager}{ASTManager}}\ \{}
+\DoxyCodeLine{00108\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00110\ \ \ \ \ \mbox{\hyperlink{class_a_s_t_manager_a0450f12de30e458d1371988aeaf8f4be}{ASTManager}}();\ \ \ }
+\DoxyCodeLine{00111\ \ \ \ \ \mbox{\hyperlink{class_a_s_t_manager_a03218879753826228b79fe9cb33b647a}{\string~ASTManager}}();\ \ }
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00114\ \ \ \ \ \mbox{\hyperlink{class_a_s_t_node}{ASTNode}}*\ \mbox{\hyperlink{class_a_s_t_manager_a0518fbe8b8205d4ee9b9354e584dee63}{newNode}}(NodeType\ type);\ \ }
+\DoxyCodeLine{00115\ \ \ \ \ \mbox{\hyperlink{class_a_s_t_node}{ASTNode}}*\ \mbox{\hyperlink{class_a_s_t_manager_a0518fbe8b8205d4ee9b9354e584dee63}{newNode}}();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00116\ \ \ \ \ \mbox{\hyperlink{class_a_s_t_node}{ASTNode}}*\ \mbox{\hyperlink{class_a_s_t_manager_a6a554188699d76308b29bf2f0f78a619}{newNode}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\&\ data);\ \ }
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{class_a_s_t_manager_a6566ac2c4a02c851ad5df6c5f022cd87}{print}}(\mbox{\hyperlink{class_a_s_t_node}{ASTNode}}*\ root,\ \textcolor{keywordtype}{int}\ tabs\ =\ 0)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00120\ \};}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00123\ \textcolor{keyword}{extern}\ \mbox{\hyperlink{class_a_s_t_manager}{ASTManager}}\ astManager;\ }
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \textcolor{preprocessor}{\#endif\ }}
+
+\end{DoxyCode}
