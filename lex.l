@@ -4,11 +4,11 @@
 #include <iostream>
 #include <string>
 #include "ast.h"
-#include "parser.tab.h"
+#include "parser.tab.hpp"
 
 using namespace std;
 
-int prev_state[1] = {0};
+std::string state = "INITIAL";
 %}
 
 %x PYTHON_CODE
@@ -31,11 +31,11 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 <INITIAL>\n                           ; 
 
-<INITIAL>"\\documentclass{article}"   { cout << " DOCUMENT CLASS\n"; }
+<INITIAL>"\\documentclass{article}"   { ; }
 
-<INITIAL>"\\usepackage{graphicx}"     { cout << " USE PACKAGE GRAPHICX\n"; }
+<INITIAL>"\\usepackage{graphicx}"     { ; }
 
-<INITIAL>"\\usepackage{hyperref}"     { cout << " USE PACKAGE HYPERREF\n"; }
+<INITIAL>"\\usepackage{hyperref}"     { ; }
 
 <INITIAL>"\\title{"                   { BEGIN(TITLE_CONTENT); return TITLE; }
 
@@ -73,7 +73,7 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 <HREF_TAG>"{"                         { return BEGIN_CURLY; }
 
-<HREF_TAG>"}"                         { BEGIN(INITIAL); return END_CURLY; }
+<HREF_TAG>"}"                         { if(state == "INITIAL")BEGIN(INITIAL); else if(state == "ENV_TABULAR") BEGIN(ENV_TABULAR); else cout<<"SYNTAX ERROR"<<endl; return END_CURLY; }
 
 <INITIAL,ENV_TABULAR>"\\textbf"       { return T_BF; }
 
@@ -83,11 +83,11 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 <INITIAL,ENV_TABULAR,ENV_FIGURE>"{"   { return BEGIN_CURLY; }
 
-<INITIAL,ENV_TABULAR>"}"              { BEGIN(INITIAL); return END_CURLY; }
+<INITIAL,ENV_TABULAR>"}"              { if(state == "INITIAL")BEGIN(INITIAL); else if(state == "ENV_TABULAR") BEGIN(ENV_TABULAR); else cout<<"SYNTAX ERROR"<<endl; return END_CURLY; }
 
 "\\begin{tabular}"                    { BEGIN(TABLE_ARGUMENTS); return BEGIN_TABULAR; }
 
-<ENV_TABULAR>"\\end{tabular}"         { BEGIN(INITIAL); prev_state[0] = 0; return END_TABULAR; }
+<ENV_TABULAR>"\\end{tabular}"         { BEGIN(INITIAL); state = "INITIAL"; return END_TABULAR; }
 
 <TABLE_ARGUMENTS>"{"                  { return BEGIN_CURLY; }
 
@@ -105,7 +105,7 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 <INITIAL>"\\hrule"                      { return HRULE; }
 
-<TABLE_ARGUMENTS>"}"                    { BEGIN(ENV_TABULAR); prev_state[0] = 1; return END_CURLY; }
+<TABLE_ARGUMENTS>"}"                    { BEGIN(ENV_TABULAR); state = "ENV_TABULAR"; return END_CURLY; }
 
 <ENV_TABULAR>"&"                        { return AMPERSAND; }
 
@@ -124,9 +124,9 @@ SPECIAL [\.,\^\-=+#!\(\)?\<\>\*:;@\'/]
 
 <INITIAL>"\\end{document}"              { return END_DOCUMENT; }
 
-"\\begin{figure}"                       { BEGIN(ENV_FIGURE); prev_state[0] = 0; return BEGIN_FIGURE; }
+"\\begin{figure}"                       { BEGIN(ENV_FIGURE); return BEGIN_FIGURE; }
 
-<ENV_TABULAR>"\\begin{figure}"          { BEGIN(ENV_FIGURE); prev_state[0] = 1; return BEGIN_FIGURE; }
+<ENV_TABULAR>"\\begin{figure}"          { BEGIN(ENV_FIGURE); return BEGIN_FIGURE; }
 
 <ENV_FIGURE>"}"                         { BEGIN(INITIAL); return END_CURLY; }
 

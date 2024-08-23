@@ -1,0 +1,53 @@
+cmake_minimum_required(VERSION 3.10)
+project(Latex_to_Markdown_Converter)
+
+# Enable C++11 standard
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+# Source files (note: lex.yy.cpp and parser.tab.cpp are generated)
+set(SOURCE_FILES
+    main.cpp
+    ast.cpp
+    converter.cpp
+)
+
+# Include directories
+include_directories(${CMAKE_SOURCE_DIR})  # Include the source directory where ast.h is located
+include_directories(${CMAKE_BINARY_DIR})  # Include the binary directory for generated files
+
+# Bison (parser)
+add_custom_command(
+    OUTPUT parser.tab.cpp parser.tab.h
+    COMMAND bison -d -v ${CMAKE_SOURCE_DIR}/parser.y -o parser.tab.cpp
+    DEPENDS ${CMAKE_SOURCE_DIR}/parser.y
+    COMMENT "Running bison on parser.y"
+)
+
+# Flex (lex)
+add_custom_command(
+    OUTPUT lex.yy.cpp
+    COMMAND flex -o lex.yy.cpp ${CMAKE_SOURCE_DIR}/lex.l
+    DEPENDS ${CMAKE_SOURCE_DIR}/lex.l parser.tab.h
+    COMMENT "Running flex on lex.l"
+)
+
+# Add the generated files to the list of sources
+list(APPEND SOURCE_FILES lex.yy.cpp parser.tab.cpp)
+
+# Executable
+add_executable(compiler ${SOURCE_FILES})
+
+# Clean up generated files
+set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "parser.tab.cpp;parser.tab.h;lex.yy.cpp;ast.txt")
+
+add_custom_target(clean_md_files
+    COMMAND find ${CMAKE_SOURCE_DIR} -type f -name \"*.md\" ! -name \"readme.md\" -exec rm -f {} +
+    COMMENT "Cleaning up markdown files"
+)
+
+add_custom_target(clean_all
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clean
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clean_md_files
+    COMMENT "Cleaning up generated files and markdown files"
+)

@@ -7,7 +7,7 @@
 #include <fstream>
 #include <cstdlib>
 #include "ast.h"
-#include "parser.tab.h"
+#include "parser.tab.hpp"
 
 using namespace std;
 
@@ -103,8 +103,7 @@ content_element:
   | text
   | figure
   | hrule
-  | tabular
-  | href;
+  | tabular;
 
 /*##Handles unordered (ul) and ordered (ol) lists, where items are added as children to ITEMIZE_H or ENUMERATE_H nodes.*/
 
@@ -230,6 +229,10 @@ text:
         ASTNode* parNode = astManager.newNode(PAR_H);
         parNode->addChild($3);  //! Add the following text as a child of PAR_H
         $$->addChild(parNode);
+    }
+    | text href{
+        $$ = $1;
+        $$->addChild($2);
     }
     | text PAR {
         $$ = $1;
