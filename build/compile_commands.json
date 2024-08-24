@@ -1,0 +1,50 @@
+[
+{
+  "directory": "/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -I/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1 -I/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build -g -std=gnu++11 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -o CMakeFiles/compiler.dir/main.cpp.o -c /Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/main.cpp",
+  "file": "/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/main.cpp",
+  "output": "CMakeFiles/compiler.dir/main.cpp.o"
+},
+{
+  "directory": "/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -I/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1 -I/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build -g -std=gnu++11 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -o CMakeFiles/compiler.dir/ast.cpp.o -c /Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/ast.cpp",
+  "file": "/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/ast.cpp",
+  "output": "CMakeFiles/compiler.dir/ast.cpp.o"
+},
+{
+  "directory": "/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -I/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1 -I/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build -g -std=gnu++11 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -o CMakeFiles/compiler.dir/converter.cpp.o -c /Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/converter.cpp",
+  "file": "/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/converter.cpp",
+  "output": "CMakeFiles/compiler.dir/converter.cpp.o"
+},
+{
+  "directory": "/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -I/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1 -I/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build -g -std=gnu++11 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -o CMakeFiles/compiler.dir/lex.yy.cpp.o -c /Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build/lex.yy.cpp",
+  "file": "/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build/lex.yy.cpp",
+  "output": "CMakeFiles/compiler.dir/lex.yy.cpp.o"
+},
+{
+  "directory": "/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -I/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1 -I/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build -g -std=gnu++11 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -o CMakeFiles/compiler.dir/parser.tab.cpp.o -c /Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build/parser.tab.cpp",
+  "file": "/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build/parser.tab.cpp",
+  "output": "CMakeFiles/compiler.dir/parser.tab.cpp.o"
+},
+{
+  "directory": "/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -I/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1 -I/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build -isystem /opt/homebrew/Cellar/googletest/1.15.2/include -g -std=gnu++14 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -o CMakeFiles/runUnitTests.dir/test.cpp.o -c /Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/test.cpp",
+  "file": "/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/test.cpp",
+  "output": "CMakeFiles/runUnitTests.dir/test.cpp.o"
+},
+{
+  "directory": "/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -I/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1 -I/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build -isystem /opt/homebrew/Cellar/googletest/1.15.2/include -g -std=gnu++14 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -o CMakeFiles/runUnitTests.dir/ast.cpp.o -c /Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/ast.cpp",
+  "file": "/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/ast.cpp",
+  "output": "CMakeFiles/runUnitTests.dir/ast.cpp.o"
+},
+{
+  "directory": "/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build",
+  "command": "/Library/Developer/CommandLineTools/usr/bin/c++  -I/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1 -I/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/build -isystem /opt/homebrew/Cellar/googletest/1.15.2/include -g -std=gnu++14 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk -o CMakeFiles/runUnitTests.dir/converter.cpp.o -c /Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/converter.cpp",
+  "file": "/Users/divyanshudwivedi2018gmail.com/Desktop/SSL/final-A1/converter.cpp",
+  "output": "CMakeFiles/runUnitTests.dir/converter.cpp.o"
+}
+]

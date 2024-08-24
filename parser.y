@@ -238,6 +238,7 @@ text:
         $$ = $1;
         $$->addChild($2);
     }
+    | href
     | text PAR {
         $$ = $1;
         ASTNode* parNode = astManager.newNode(PAR_H);

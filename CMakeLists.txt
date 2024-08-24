@@ -13,8 +13,8 @@ set(SOURCE_FILES
 )
 
 # Include directories
-include_directories(${CMAKE_SOURCE_DIR})  # Include the source directory where ast.h is located
-include_directories(${CMAKE_BINARY_DIR})  # Include the binary directory for generated files
+include_directories(${CMAKE_SOURCE_DIR})  
+include_directories(${CMAKE_BINARY_DIR})  
 
 # Bison (parser)
 add_custom_command(
@@ -38,37 +38,29 @@ list(APPEND SOURCE_FILES lex.yy.cpp parser.tab.cpp)
 # Executable
 add_executable(compiler ${SOURCE_FILES})
 
-# Testing
-if (test)
-  if (APPLE)
-    add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
-    add_definitions(-D__GLIBCXX__)
-  endif (APPLE)
+# Google Test setup
 
-  # This adds another subdirectory, which has 'project(gtest)'.
-  add_subdirectory(lib/gtelsst-1.6.0)
+# Specify the path to Google Test installed via Homebrew
+set(GTEST_ROOT /opt/homebrew/Cellar/googletest/1.15.2)
+find_package(GTest REQUIRED PATHS ${GTEST_ROOT} NO_DEFAULT_PATH)
 
-  enable_testing()
+# Enable testing
+enable_testing()
 
-  # Include the gtest library. gtest_SOURCE_DIR is available due to
-  # 'project(gtest)' above.
-  include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+# Include the GTest library directories
+include_directories(${GTEST_INCLUDE_DIRS})
 
-  ##############
-  # Unit Tests
-  ##############
-  add_executable(runUnitTests test.cpp)
+# Unit Tests
+add_executable(runUnitTests test.cpp ast.cpp converter.cpp) 
 
-  # Standard linking to gtest stuff.
-  target_link_libraries(runUnitTests gtest gtest_main)
-
-endif()
+# Link GTest and your project files to the test executable
+target_link_libraries(runUnitTests GTest::gtest GTest::gtest_main)
 
 # Clean up generated files
 set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "parser.tab.cpp;parser.tab.h;lex.yy.cpp;ast.txt")
 
 add_custom_target(clean_md_files
-    COMMAND find ${CMAKE_SOURCE_DIR} -type f -name \"*.md\" ! -name \"readme.md\" -exec rm -f {} +
+    COMMAND find ${CMAKE_SOURCE_DIR} -type f -name "*.md" ! -name "readme.md" -exec rm -f {} +
     COMMENT "Cleaning up markdown files"
 )
 

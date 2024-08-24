@@ -48,8 +48,25 @@ std::string converter::traversal(ASTNode* root) {
         case STRING_H: 
             {
                 string str = root->data; 
-                if (!root->children.empty()) 
-                    return str +" "+traversal(root->children[0]); 
+
+                // Traverse children if they exist
+                if (!root->children.empty()) {
+                    for (auto child : root->children) {
+                        if (child) { // Ensure child is not nullptr
+                            str = str + " " + traversal(child);
+                        }
+                    }
+
+                    // Check if the first child has children
+                    if (root->children.size() > 0 && !root->children[0]->children.empty()) {
+                        for (auto child : root->children[0]->children) {
+                            if (child) { // Ensure child is not nullptr
+                                str = str + " " + traversal(child);
+                            }
+                        }
+                    }
+                }
+
                 return str;
             }
         case SECTION_H: return traverseSection(root, type);  //! Handle section nodes
@@ -200,7 +217,7 @@ std::string converter::traverseHref(ASTNode* root, int type) {
         if(flag) link += x;
         else label += x;
     }
-    return getMapping(HREF_H) + "[" + link + "]" + "(" + label + ")" + "\n\n";
+    return getMapping(HREF_H) + "[" + label + "]" + "(" + link + ")" + " \n";
 }
 
 //! Converts REFERENCE nodes to Markdown format
@@ -311,9 +328,9 @@ std::string converter::traverseParagraph(ASTNode* root, int type) {
     for (auto& child : temp->children) {
         result += traverseFont(child, child->node_type); 
     }
-    for (auto& child : root->children) {
-        result += "\n\n"+traverseFont(child, child->node_type); 
-    }
+    // for (auto& child : root->children) {
+    //     result += "\n\n"+traverseFont(child, child->node_type); 
+    // }
     
     return result + "\n\n";
 }
