@@ -38,6 +38,32 @@ list(APPEND SOURCE_FILES lex.yy.cpp parser.tab.cpp)
 # Executable
 add_executable(compiler ${SOURCE_FILES})
 
+# Testing
+if (test)
+  if (APPLE)
+    add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
+    add_definitions(-D__GLIBCXX__)
+  endif (APPLE)
+
+  # This adds another subdirectory, which has 'project(gtest)'.
+  add_subdirectory(lib/gtelsst-1.6.0)
+
+  enable_testing()
+
+  # Include the gtest library. gtest_SOURCE_DIR is available due to
+  # 'project(gtest)' above.
+  include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+
+  ##############
+  # Unit Tests
+  ##############
+  add_executable(runUnitTests test.cpp)
+
+  # Standard linking to gtest stuff.
+  target_link_libraries(runUnitTests gtest gtest_main)
+
+endif()
+
 # Clean up generated files
 set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "parser.tab.cpp;parser.tab.h;lex.yy.cpp;ast.txt")
 
