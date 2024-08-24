@@ -76,6 +76,10 @@ date: DATE STRING END_CURLY {
 begin_document: BEGIN_DOCUMENT content END_DOCUMENT {
     $$ = astManager.newNode(DOCUMENT_H);
     $$->addChild($2);
+}
+| content {
+    $$ = astManager.newNode(DOCUMENT_H);
+    $$->addChild($1);
 };
 
 /*##content can consist of various content_element types, including text, lists, figures, tables, etc.

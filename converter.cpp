@@ -111,20 +111,20 @@ std::string converter::traverseSection(ASTNode* root, int type) {
     section_no++;
     subsection_no = 0;
     subsubsection_no = 0;
-    return getMapping(type) + " " + myString(section_no) + " " + root->data + "\n\n" + traverseChildren(root);
+    return getMapping(type) + " " + myString(section_no) + " " + root->data + "\n\n" + traverseChildren(root) + "\n\n";
 }
 
 //! Converts a SUBSECTION node to Markdown format
 std::string converter::traverseSubSection(ASTNode* root, int type) {
     subsection_no++;
     subsubsection_no = 0;
-    return getMapping(type) + " " + myString(section_no) + "." + myString(subsection_no) + " " + root->data + "\n\n" + traverseChildren(root);
+    return getMapping(type) + " " + myString(section_no) + "." + myString(subsection_no) + " " + root->data + "\n\n" + traverseChildren(root) + "\n\n";
 }
 
 //! Converts a SUBSUBSECTION node to Markdown format
 std::string converter::traverseSubsubSection(ASTNode* root, int type) {
     subsubsection_no++;
-    return getMapping(type) + " " + myString(section_no) + "." + myString(subsection_no) + "." + myString(subsubsection_no) + " " + root->data + "\n\n" + traverseChildren(root);
+    return getMapping(type) + " " + myString(section_no) + "." + myString(subsection_no) + "." + myString(subsubsection_no) + " " + root->data + "\n\n" + traverseChildren(root) + "\n\n";
 }
 
 //! Converts LIST nodes (either ITEMIZE or ENUMERATE) to Markdown format
@@ -164,7 +164,7 @@ std::string converter::traverseVerbatim(ASTNode* root, int type) {
 
 //! Converts font formatting nodes (e.g., bold, italic) to Markdown format
 std::string converter::traverseFont(ASTNode* root, int type) {
-    return getMapping(type) + root->data + getMapping(type) + "\n";
+    return getMapping(type) + root->data + getMapping(type) + " ";
 }
 
 //! Converts DATE nodes to Markdown format
@@ -285,21 +285,23 @@ std::string converter::traverseTable(ASTNode* root, int type) {
 
     //! Adding formatting (e.g., column separators)
     if (!result.empty()) {
-        //! Add a separator line after the header (first row)
+    // Add a separator line after the header (first row)
         size_t pos = result.find('\n');
         if (pos != std::string::npos) {
-            std::string separator(pos, '-'); //! Create a separator line of dashes
-            int len = separator.length();
-            int p = len/count;
-            count--;
-            while(p<len && count--){
-                separator[p] = '|';
-                p*=2;
+            std::string separator(pos, '-'); // Create a separator line of dashes
+
+            // Add '|' separators for each column
+            size_t columnWidth = pos / count; // Approximate width of each column
+
+            for (int i = 1; i < count; ++i) {
+                separator[i * columnWidth] = '|';
             }
-            result.insert(pos + 1, separator + "\n"); //! Insert after the first row
+
+            result.insert(pos + 1, separator + "\n"); // Insert after the first row
         }
     }
-    return result;
+
+    return result + "\n\n";
 }
 
 //! Converts PARAGRAPH nodes to Markdown format
